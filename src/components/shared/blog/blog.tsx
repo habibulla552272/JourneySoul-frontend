@@ -1,6 +1,7 @@
 import Image from "next/image";
 import React from "react";
 import BlogComment from "./blogComment";
+import Link from "next/link";
 
 interface BlogCardProps {
   image: string;
@@ -18,14 +19,15 @@ const BlogCard: React.FC<BlogCardProps> = ({
   type,
 }) => {
   return (
-    <div className="flex flex-col justify-between h-full rounded-xl overflow-hidden shadow-md bg-white hover:shadow-lg transition-all duration-300">
+    <div className="flex flex-col  h-full rounded-xl overflow-hidden shadow-md bg-white hover:shadow-lg transition-all duration-300">
       {/* Image Section */}
-      <div className="relative w-full h-[250px]">
+      <div className="relative w-full aspect-5/3">
         <Image
           src={image}
           alt={tittle}
-          fill
-          className="object-cover hover:scale-105 transition-transform duration-500"
+          width={500}
+          height={300}
+          className="object-cover hover:scale-105 w-full aspect-5/3 transition-transform duration-500"
         />
         <p className="absolute top-4 right-4 bg-black/50 text-white text-xs uppercase px-3 py-1 rounded-full">
           {type}
@@ -33,22 +35,23 @@ const BlogCard: React.FC<BlogCardProps> = ({
       </div>
 
       {/* Content Section */}
-      <div className="flex flex-col justify-between flex-grw p-4">
-        <div>
+      <div className="flex flex-col flex-1 justify-between p-4">
+     
           <p className="text-gray-500 text-sm">{date}</p>
-          <h2 className="text-lg font-semibold text-gray-800 mt-1 mb-2 hover:text-amber-500 transition-colors duration-300">
+          <h2 className="text-lg font-semibold  overflow-hidden text-gray-800 mt-1 mb-2 hover:text-amber-500 transition-colors duration-300">
             {tittle}
           </h2>
-          <p className="text-gray-600 text-sm leading-relaxed">
+          <p className="text-gray-600n text-sm leading-relaxed">
             {description.length > 100
-              ? description.slice(0, 100) + "..."
+              ? description.slice(0, 100) + <p>...</p>
               : description}
           </p>
-        </div>
+       
 
         {/* Fixed bottom section */}
-        <div className="pt-4">
-          <BlogComment />
+        <div className="pt-4 flex justify-between items-center">
+          <BlogComment /> 
+          <Link className="hover:border-b-1 font-normal text-xs pt-2 hover:border-green-300 " href={'#'}>Read More</Link>
         </div>
       </div>
     </div>
