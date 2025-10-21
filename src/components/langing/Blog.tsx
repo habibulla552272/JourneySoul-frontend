@@ -5,6 +5,7 @@ import BlogCard from '../shared/blog/blog';
 import BlogFilter from '../blog/BlogFilter';
 import CreateNewBlog from '../shared/blog/CreateNewBlog';
 import { PlusCircleIcon } from 'lucide-react';
+import Link from 'next/link';
 
 const Blog = () => {
   const [isDialogOpen,setIsDialogOpen]=useState(false)
@@ -16,8 +17,11 @@ const Blog = () => {
         <div className='flex justify-between items-center'>
 
         <BlogFilter />
-        <PlusCircleIcon onClick={()=>setIsDialogOpen(!isDialogOpen)} />
-         <CreateNewBlog open={isDialogOpen} onOpenChange={setIsDialogOpen}  />
+        <Link href={'/blog/blogcreate'}>
+        <PlusCircleIcon  />
+        
+        </Link>
+       
         </div>
          <div className='grid grid-cols-1 gap-5 sm:grid-cols-2 md:grid-cols-3 items-stretch'>
             {data.map((item)=>(
