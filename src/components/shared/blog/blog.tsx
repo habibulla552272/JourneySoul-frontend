@@ -9,6 +9,12 @@ interface BlogCardProps {
   tittle: string;
   description: string;
   type: string;
+  likes?: number;
+  comments?: number;
+  author?: {
+    name: string;
+    email: string;
+  };
 }
 
 const BlogCard: React.FC<BlogCardProps> = ({
@@ -17,9 +23,16 @@ const BlogCard: React.FC<BlogCardProps> = ({
   tittle,
   description,
   type,
+  likes = 0,
+  comments = 0,
+  author,
 }) => {
+  const truncatedDescription = description.length > 100 
+    ? `${description.slice(0, 100)}...` 
+    : description;
+
   return (
-    <div className="flex flex-col  h-full rounded-xl overflow-hidden shadow-md bg-white hover:shadow-lg transition-all duration-300">
+    <div className="flex flex-col h-full rounded-xl overflow-hidden shadow-md bg-white hover:shadow-lg transition-all duration-300">
       {/* Image Section */}
       <div className="relative w-full aspect-5/3">
         <Image
@@ -36,22 +49,30 @@ const BlogCard: React.FC<BlogCardProps> = ({
 
       {/* Content Section */}
       <div className="flex flex-col flex-1 justify-between p-4">
-     
+        <div className="flex-1">
           <p className="text-gray-500 text-sm">{date}</p>
-          <h2 className="text-lg font-semibold  overflow-hidden text-gray-800 mt-1 mb-2 hover:text-amber-500 transition-colors duration-300">
+          <h2 className="text-lg font-semibold overflow-hidden text-gray-800 mt-1 mb-2 hover:text-amber-500 transition-colors duration-300">
             {tittle}
           </h2>
-          <p className="text-gray-600n text-sm leading-relaxed">
-            {description.length > 100
-              ? description.slice(0, 100) + <p>...</p>
-              : description}
+          <p className="text-gray-600 text-sm leading-relaxed">
+            {truncatedDescription}
           </p>
-       
+          {author && (
+            <p className="text-gray-500 text-xs mt-2">
+              By: {author.name}
+            </p>
+          )}
+        </div>
 
         {/* Fixed bottom section */}
         <div className="pt-4 flex justify-between items-center">
-          <BlogComment /> 
-          <Link className="hover:border-b-1 font-normal text-xs pt-2 hover:border-green-300 " href={'#'}>Read More</Link>
+          <BlogComment likes={likes} comments={comments} /> 
+          <Link 
+            className="hover:border-b-1 font-normal text-xs pt-2 hover:border-green-300" 
+            href={`/blog/${tittle.toLowerCase().replace(/\s+/g, '-')}`}
+          >
+            Read More
+          </Link>
         </div>
       </div>
     </div>

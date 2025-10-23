@@ -19,6 +19,7 @@ import { Button } from "../ui/button";
 import { newUser } from "@/lib/api";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { useMutation } from "@tanstack/react-query";
 
 
 // ✅ Step 1: Define form schema with Zod validation
@@ -30,7 +31,7 @@ const formSchema = z.object({
 
 const Signup = () => {
     // ✅ Step 2: Initialize form
-    const route=useRouter()
+    const route = useRouter()
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -43,20 +44,22 @@ const Signup = () => {
     // ✅ Step 3: Handle form submission
 
 
-    const onSubmit = async (values: z.infer<typeof formSchema>) => {
-        try {
-
-            const result = await newUser(values);
-            console.log("User registered:", result);
-            
-            toast.success("user  registered")
-            route.push('/login')
-        } catch (error:any) {
-            console.error("Error registering user:", error);
-            toast.error(error.message || 'errror resistering')
-
-        }
-    }
+    const registerMutation = useMutation({
+        mutationFn: newUser,
+        onSuccess: (data) => {
+            console.log("✅ User registered:", data);
+            route.push("/login");
+            toast.success("User registered successfully!");
+        },
+        onError: (error) => {
+            console.error("❌ Registration failed:", error);
+            toast.error(error.message || "Error registering user");
+        },
+    });
+    const onSubmit = (values: z.infer<typeof formSchema>) => {
+        console.log("Register attempt:", values);
+        registerMutation.mutate(values);
+    };
 
     return (
         <section className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
@@ -114,7 +117,7 @@ const Signup = () => {
                         />
 
                         <Button type="submit" className="w-full">
-                            Sign Up
+                            {registerMutation.isPending ? "Registering..." : "Sign Up"}
                         </Button>
                     </form>
                 </Form>
