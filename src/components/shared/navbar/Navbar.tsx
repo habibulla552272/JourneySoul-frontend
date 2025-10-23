@@ -2,6 +2,7 @@
 import Link from 'next/link'
 import React from 'react'
 import SearchCom from './search'
+import Profile from './Profile'
 
 
 const Navbar = () => {
@@ -14,12 +15,13 @@ const Navbar = () => {
           </div>
           <div className='w-[60%]'>
             {/* content  */}
-             <ul className='grid grid-cols-6'>
+             <ul className='grid grid-cols-7'>
                 <li className=''> <Link href={'/'}>Home </Link></li>
                 <li><Link href='/about'>About</Link></li>
                 <li ><Link href='blog'>Blog</Link> </li>
                 <li><Link href='/contact'>contact</Link></li>
                 <li className=' col-span-2'> <SearchCom />  </li>
+                <li><Profile /></li>
              </ul>
           </div>
 

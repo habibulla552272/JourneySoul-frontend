@@ -4,15 +4,15 @@ import { MessageSquareText, SendHorizontal, Share2, ThumbsUp } from "lucide-reac
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 
-const BlogComment = () => {
+const BlogComment = ({likes,comments}:{likes:number;comments:number}) => {
     const [comment, setcomment] = useState(false);
     const [like,setLike]=useState(0)
-    const [comments,setComments]=useState(0)
+    // const [comments,setComments]=useState(0)
 
     const handelcomment=()=>{
        toast.success('Thank you for your comment')
        setcomment(!comment)
-       setComments((prev)=> prev+1)
+    //    setComments((prev)=> prev+1)
     }
       const handelLike=()=>{
        toast.success('Thank you for your comment')
@@ -27,7 +27,7 @@ const BlogComment = () => {
 
                 <ThumbsUp className=" w-8 h-8 cursor-pointer hover:bg-green-400 hover:text-white hover:rounded-full p-2 transition-all duration-300"
                     strokeWidth={1.5} />
-                    <span>{like}</span>
+                    <span>{likes}</span>
                 </p>
                 <p className='flex items-center gap-1' onClick={()=>handelcomment()}>
 

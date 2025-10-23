@@ -16,6 +16,9 @@ import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { toast } from "sonner";
 import { loginUser } from "@/lib/api";
+import { useRouter } from "next/navigation";
+import { useMutation } from "@tanstack/react-query";
+
 
 // import your API function (you can create a similar one as newUser)
 
@@ -28,6 +31,7 @@ const formSchema = z.object({
 
 // ✅ Step 2: Component
 const Login = () => {
+
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -37,18 +41,33 @@ const Login = () => {
     });
 
     // ✅ Step 3: Handle form submit
-    const onSubmit = async (values: z.infer<typeof formSchema>) => {
-        try {
-            console.log("Login attempt:", values);
+    const router = useRouter();
 
-            const result = await loginUser(values);
-            console.log("✅ Login success:", result);
-
-            toast.success("Login successful!");
-        } catch (error: any) {
+    const loginMutation = useMutation({
+        mutationFn: (data: {
+            email: string;
+            password: string;
+        }
+        ) => loginUser(data),
+        onSuccess: (data) => {
+            const token = data?.data?.access?.token;
+            if (token) {
+                localStorage.setItem("token", token);
+                toast.success("Login successful!");
+                console.log("✅ Login success:", token);
+                router.push("/");
+            } else {
+                toast.error("No token received from server");
+            }
+        },
+        onError: (error) => {
             console.error("❌ Login failed:", error);
             toast.error(error.message || "Invalid email or password!");
-        }
+        },
+    });
+    const onSubmit = (values: z.infer<typeof formSchema>) => {
+        console.log("Login attempt:", values);
+        loginMutation.mutate(values);
     };
 
     return (
@@ -103,7 +122,7 @@ const Login = () => {
                         />
 
                         <Button type="submit" className="w-full">
-                            Login
+                            {loginMutation.isPending ? "Logging in..." : "Login"}
                         </Button>
                     </form>
                 </Form>
