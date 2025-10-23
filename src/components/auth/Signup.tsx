@@ -18,6 +18,7 @@ import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { newUser } from "@/lib/api";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 
 // ✅ Step 1: Define form schema with Zod validation
@@ -29,6 +30,7 @@ const formSchema = z.object({
 
 const Signup = () => {
     // ✅ Step 2: Initialize form
+    const route=useRouter()
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -46,7 +48,9 @@ const Signup = () => {
 
             const result = await newUser(values);
             console.log("User registered:", result);
+            
             toast.success("user  registered")
+            route.push('/login')
         } catch (error:any) {
             console.error("Error registering user:", error);
             toast.error(error.message || 'errror resistering')

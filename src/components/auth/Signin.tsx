@@ -16,6 +16,8 @@ import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { toast } from "sonner";
 import { loginUser } from "@/lib/api";
+import { useRouter } from "next/navigation";
+
 
 // import your API function (you can create a similar one as newUser)
 
@@ -28,6 +30,7 @@ const formSchema = z.object({
 
 // ✅ Step 2: Component
 const Login = () => {
+    const route=useRouter()
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -43,7 +46,7 @@ const Login = () => {
 
             const result = await loginUser(values);
             console.log("✅ Login success:", result);
-
+           route.push('/')
             toast.success("Login successful!");
         } catch (error: any) {
             console.error("❌ Login failed:", error);
