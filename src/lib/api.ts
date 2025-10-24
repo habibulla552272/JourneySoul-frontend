@@ -1,33 +1,30 @@
 import axios from "axios";
-import { error } from "console";
-import { config } from "process";
 
-
-const API_URL= process.env.NEXT_PUBLIC_API_URL
+const API_URL = process.env.NEXT_PUBLIC_API_URL
 
 // crate axios instance
 
-const api= axios.create({
-  baseURL:API_URL,
-    headers: {
+const api = axios.create({
+  baseURL: API_URL,
+  headers: {
     "Content-Type": "application/json",
   },
 })
 
 api.interceptors.request.use(
-  async(config)=>{
-    if(typeof window !== 'undefined'){
-      const token=localStorage.getItem('token');
-      console.log('token',token)
-      if(token){
-        config.headers.Authorization= `Bearer ${token}`;
-      }else{
+  async (config) => {
+    if (typeof window !== 'undefined') {
+      const token = localStorage.getItem('token');
+      console.log('token', token)
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+      } else {
         console.warn("No token in session");
       }
     }
     return config;
   },
-  (error)=> Promise.reject(error)
+  (error) => Promise.reject(error)
 )
 
 
@@ -38,7 +35,7 @@ export async function newUser(data: {
 }) {
   try {
     console.log("0", data);
-    const res = await api.post(`/users/register`,data)
+    const res = await api.post(`/users/register`, data)
     console.log("1", res);
     return res.data;
   } catch (error) {
@@ -78,12 +75,12 @@ export async function loginUser(data: { email: string; password: string }) {
 // fetch blog 
 
 export async function FetchBlog() {
-    try{
-          const res=await api.get(`/blogs`);
-          return res?.data?.data;
-    } catch(error){
-      console.log(error)
-    } 
+  try {
+    const res = await api.get(`/blogs`);
+    return res?.data?.data;
+  } catch (error) {
+    console.log(error)
+  }
 }
 
 
@@ -91,10 +88,10 @@ export async function FetchBlog() {
 // profile fetch 
 
 export async function userProfile() {
-    try{
-          const res=await api.get(`/users/profile`);
-          return res?.data;
-    } catch(error){
-      console.log(error)
-    } 
+  try {
+    const res = await api.get(`/users/profile`);
+    return res?.data;
+  } catch (error) {
+    console.log(error)
+  }
 }

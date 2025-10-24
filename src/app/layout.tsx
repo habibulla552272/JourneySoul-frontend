@@ -4,6 +4,7 @@ import "./globals.css";
 import TanstackProvider from "../providers/tanstack-provider";
 import Navbar from "@/components/shared/navbar/Navbar";
 import { Toaster } from "@/components/ui/sonner";
+import LayoutVisibilityWrapper from "@/providers/layout-visibility-wraper";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -30,11 +31,15 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <TanstackProvider>
-          <Navbar  />
-          {children}
-          <Toaster position="top-center" richColors closeButton duration={5000} visibleToasts={3} offset={16}  />
-        </TanstackProvider>
+          <TanstackProvider>
+        <LayoutVisibilityWrapper>
+
+
+            {/* <Navbar /> */}
+            {children}
+            <Toaster position="top-center" richColors closeButton duration={5000} visibleToasts={3} offset={16} />
+        </LayoutVisibilityWrapper>
+          </TanstackProvider>
       </body>
     </html>
   );
