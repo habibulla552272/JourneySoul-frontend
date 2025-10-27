@@ -9,7 +9,8 @@ interface BlogCardProps {
   tittle: string;
   description: string;
   type: string;
-  likes?: number;
+  id: string;
+  likes?: string[]; // Changed from number to string[]
   comments?: number;
   author?: {
     name: string;
@@ -18,19 +19,19 @@ interface BlogCardProps {
 }
 
 const BlogCard: React.FC<BlogCardProps> = ({
+  id = "",
   image,
   date,
   tittle,
   description,
   type,
-  likes = 0,
+  likes = [],
   comments = 0,
   author,
 }) => {
-  const truncatedDescription = description.length > 100 
-    ? `${description.slice(0, 100)}...` 
-    : description;
-
+  const truncatedDescription =
+    description.length > 100 ? `${description.slice(0, 100)}...` : description;
+  console.log(likes, "likes000");
   return (
     <div className="flex flex-col h-full rounded-xl overflow-hidden shadow-md bg-white hover:shadow-lg transition-all duration-300">
       {/* Image Section */}
@@ -58,18 +59,16 @@ const BlogCard: React.FC<BlogCardProps> = ({
             {truncatedDescription}
           </p>
           {author && (
-            <p className="text-gray-500 text-xs mt-2">
-              By: {author.name}
-            </p>
+            <p className="text-gray-500 text-xs mt-2">By: {author.name}</p>
           )}
         </div>
 
         {/* Fixed bottom section */}
         <div className="pt-4 flex justify-between items-center">
-          <BlogComment likes={likes} comments={comments} /> 
-          <Link 
-            className="hover:border-b-1 font-normal text-xs pt-2 hover:border-green-300" 
-            href={`/blog/${tittle.toLowerCase().replace(/\s+/g, '-')}`}
+          <BlogComment id={id} likes={likes} comments={comments} />
+          <Link
+            className="hover:border-b-1 font-normal text-xs pt-2 hover:border-green-300"
+            href={`/blog/${tittle.toLowerCase().replace(/\s+/g, "-")}`}
           >
             Read More
           </Link>
