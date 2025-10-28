@@ -11,6 +11,7 @@ interface BlogCardProps {
   type: string;
   id: string;
   likes?: string[];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   comments?: any[]; // Changed to any[] to handle both comment objects and arrays
   author?: {
     name: string;
@@ -33,6 +34,7 @@ const BlogCard: React.FC<BlogCardProps> = ({
     description.length > 100 ? `${description.slice(0, 100)}...` : description;
 
   // Calculate comment count properly
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const getCommentCount = (comments: any[]): number => {
     if (!comments || comments.length === 0) return 0;
     
