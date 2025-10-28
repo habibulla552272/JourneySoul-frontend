@@ -25,7 +25,7 @@ interface BlogCommentProps {
   id: string;
 }
 
-interface Comment {
+export interface Comment {
   _id: string;
   user: string;
   text: string;
@@ -66,10 +66,12 @@ const BlogComment = ({ likes, comments, id }: BlogCommentProps) => {
     mutationKey: ["likeBlog"],
     mutationFn: () => likeUnlike(id),
     onSuccess: (data) => {
+      console.log(data)
       toast.success(hasLiked ? "Post liked" : "Post unliked!");
     },
     onError: (error) => {
       // Revert optimistic update
+      console.log(error)
       setHasLiked((prev) => !prev);
       setLikeCount((prev) => (hasLiked ? prev + 1 : prev - 1));
       toast.error("Error liking the post");
@@ -87,6 +89,7 @@ const BlogComment = ({ likes, comments, id }: BlogCommentProps) => {
       queryClient.invalidateQueries({ queryKey: ["comments", id] });
     },
     onError: (error) => {
+      console.log(error)
       toast.error("Failed to add comment");
     },
   });
