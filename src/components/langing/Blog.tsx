@@ -55,7 +55,7 @@ const Blog = () => {
       </section>
     );
   }
- console.log('blogs data for id',blogdata)
+
   return (
     <section className="my-16">
       <div className="container mx-auto">
@@ -91,7 +91,7 @@ const Blog = () => {
                     description={item.content}
                     type={item.category || "Uncategorized"}
                     likes={item.likes || []} 
-                    comments={item.comments?.length || 0}
+                    comments={item.comments || []}
                     id={item._id}
                     author={
                       item.author

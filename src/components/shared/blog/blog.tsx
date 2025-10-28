@@ -10,8 +10,8 @@ interface BlogCardProps {
   description: string;
   type: string;
   id: string;
-  likes?: string[]; // Changed from number to string[]
-  comments?: number;
+  likes?: string[];
+  comments?: any[]; // Changed to any[] to handle both comment objects and arrays
   author?: {
     name: string;
     email: string;
@@ -26,12 +26,31 @@ const BlogCard: React.FC<BlogCardProps> = ({
   description,
   type,
   likes = [],
-  comments = 0,
+  comments = [],
   author,
 }) => {
   const truncatedDescription =
     description.length > 100 ? `${description.slice(0, 100)}...` : description;
-  console.log(likes, "likes000");
+
+  // Calculate comment count properly
+  const getCommentCount = (comments: any[]): number => {
+    if (!comments || comments.length === 0) return 0;
+    
+    // If comments is an array of comment objects (like in your API)
+    if (comments[0] && comments[0].text) {
+      return comments.length;
+    }
+    
+    // If comments is an array with content property
+    if (comments[0] && comments[0].content) {
+      return comments.reduce((total, comment) => total + (comment.content?.length || 0), 0);
+    }
+    
+    return comments.length;
+  };
+
+  const commentCount = getCommentCount(comments);
+
   return (
     <div className="flex flex-col h-full rounded-xl overflow-hidden shadow-md bg-white hover:shadow-lg transition-all duration-300">
       {/* Image Section */}
@@ -65,7 +84,11 @@ const BlogCard: React.FC<BlogCardProps> = ({
 
         {/* Fixed bottom section */}
         <div className="pt-4 flex justify-between items-center">
-          <BlogComment id={id} likes={likes} comments={comments} />
+          <BlogComment 
+            id={id} 
+            likes={likes} 
+            comments={commentCount} 
+          />
           <Link
             className="hover:border-b-1 font-normal text-xs pt-2 hover:border-green-300"
             href={`/blog/${tittle.toLowerCase().replace(/\s+/g, "-")}`}

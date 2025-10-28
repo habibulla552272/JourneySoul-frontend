@@ -113,3 +113,42 @@ export async function likeUnlike(id:string) {
       console.log('no user id found')
     }
 }
+
+
+export async function createComment(id: string, text: string) {
+  const userId = localStorage.getItem("userId");
+  const token = localStorage.getItem("token"); 
+  
+  if (!userId) {
+    throw new Error("Please login to comment");
+  }
+
+  try {
+    const res = await api.post(`/blogs/${id}/comments`, { 
+      text: text,
+      userId: userId,
+      category:'',
+      // new comment add korte hobe 
+    });
+    return res.data;
+  } catch (error) {
+    console.log("Comment creation error:", error);
+    // throw new Error(error.response?.data?.message || "Failed to create comment");
+  }
+}
+
+
+export async function getComments(id:string) {
+  console.log(' blog id',id)
+   const userId= localStorage.getItem("userId");
+    if(userId){
+      try{
+        const res= await api.get(`/blogs/${id}/comments`);
+        return res.data.comments
+      }catch(error){
+        console.log(error)
+      }
+    }else{
+      console.log('no user id found')
+    }
+}
