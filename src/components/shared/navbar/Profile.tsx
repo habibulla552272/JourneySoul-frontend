@@ -8,7 +8,7 @@ const Profile = () => {
         queryKey:['profiless'],
         queryFn: userProfile
     })
-    console.log(data)
+    console.log('profile dat',data)
   return (
     <div>
       hello

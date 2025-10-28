@@ -51,6 +51,9 @@ const Login = () => {
         ) => loginUser(data),
         onSuccess: (data) => {
             const token = data?.data?.access?.token;
+
+            console.log('user data',data?.data?._id)
+            localStorage.setItem('userId',data?.data?._id);
             if (token) {
                 localStorage.setItem("token", token);
                 toast.success("Login successful!");

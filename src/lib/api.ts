@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 // crate axios instance
 
@@ -9,13 +9,13 @@ const api = axios.create({
   headers: {
     "Content-Type": "application/json",
   },
-})
+});
 
 api.interceptors.request.use(
   async (config) => {
-    if (typeof window !== 'undefined') {
-      const token = localStorage.getItem('token');
-      console.log('token', token)
+    if (typeof window !== "undefined") {
+      const token = localStorage.getItem("token");
+      console.log("token", token);
       if (token) {
         config.headers.Authorization = `Bearer ${token}`;
       } else {
@@ -25,8 +25,7 @@ api.interceptors.request.use(
     return config;
   },
   (error) => Promise.reject(error)
-)
-
+);
 
 export async function newUser(data: {
   name: string;
@@ -35,7 +34,7 @@ export async function newUser(data: {
 }) {
   try {
     console.log("0", data);
-    const res = await api.post(`/users/register`, data)
+    const res = await api.post(`/users/register`, data);
     console.log("1", res);
     return res.data;
   } catch (error) {
@@ -68,30 +67,88 @@ export async function loginUser(data: { email: string; password: string }) {
   }
 }
 
+// blog
 
-
-// blog 
-
-// fetch blog 
+// fetch blog
 
 export async function FetchBlog() {
   try {
     const res = await api.get(`/blogs`);
     return res?.data?.data;
   } catch (error) {
-    console.log(error)
+    console.log(error);
+  }
+}
+
+// profile fetch
+
+export async function userProfile() {
+  const userId = localStorage.getItem("userId");
+  if (userId) {
+    try {
+      const res = await api.get(`/users/${userId}/profile`);
+      return res?.data;
+    } catch (error) {
+      console.log(error);
+    }
+  }else{
+    console.log("No userId found in localStorage"); 
   }
 }
 
 
+//like blog
 
-// profile fetch 
+// /blogs/:blogId/like
 
-export async function userProfile() {
-  try {
-    const res = await api.get(`/users/profile`);
-    return res?.data;
-  } catch (error) {
-    console.log(error)
+export async function likeUnlike(id:string) {
+    const userId= localStorage.getItem("userId");
+    if(userId){
+      try{
+        const res= await api.post(`/blogs/${id}/like`)
+      }catch(error){
+        console.log(error)
+      }
+    }else{
+      console.log('no user id found')
+    }
+}
+
+
+export async function createComment(id: string, text: string) {
+  const userId = localStorage.getItem("userId");
+  const token = localStorage.getItem("token"); 
+  
+  if (!userId) {
+    throw new Error("Please login to comment");
   }
+
+  try {
+    const res = await api.post(`/blogs/${id}/comments`, { 
+      text: text,
+      userId: userId,
+      category:'',
+      // new comment add korte hobe 
+    });
+    return res.data;
+  } catch (error) {
+    console.log("Comment creation error:", error);
+    // throw new Error(error.response?.data?.message || "Failed to create comment");
+  }
+}
+
+
+export async function getComments(id:string) {
+  console.log(' blog id',id)
+   const userId= localStorage.getItem("userId");
+    if(userId){
+      try{
+        const res= await api.get(`/blogs/${id}/comments`);
+        return res.data.comments
+      }catch(error){
+        console.log(error)
+      }
+    }else{
+      console.log('no user id found')
+    }
 }
