@@ -10,7 +10,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Image from "next/image";
-import { be } from "zod/v4/locales";
+import { be, fi } from "zod/v4/locales";
 
 // ✅ Validation Schema
 const blogSchema = z.object({
@@ -43,44 +43,56 @@ const CreateNewBlog = () => {
 
   const [preview, setPreview] = React.useState<string>("");
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      const imgURL = URL.createObjectURL(file);
-      setPreview(imgURL);
-      setValue("image", file.name);
-    }
-  };
-const onSubmit = async (data: BlogFormData) => {
-  console.log("✅ Blog Data:", data);
-  
-  try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}blogs`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${localStorage.getItem('token')}` // Fixed header name
-      },
-      body: JSON.stringify(data) // Removed semicolon, added missing parenthesis
+    if (!file) return;
+
+    const data = new FormData();
+    data.append("file", file);
+    data.append("upload_preset", "First_Time_using");
+
+    const res = await fetch("https://api.cloudinary.com/v1_1/dgxpnxsm7/image/upload", {
+      method: "POST",
+      body: data,
     });
 
-    if (!res.ok) {
-      const errorData = await res.json();
-      throw new Error(errorData.message || 'Failed to create blog');
-    }
+    const uploadedImageURL = await res.json();
+    const secureUrl = uploadedImageURL.secure_url || uploadedImageURL.url.replace(/^http:\/\//, "https://");
 
-    const result = await res.json();
-    console.log("✅ Blog created successfully:", result);
-    
-    toast.success("Blog created successfully!");
-    reset();
-    setPreview("");
-    
-  } catch (error) {
-    console.error("❌ Error creating blog:", error);
-    toast.error(`Error:${error instanceof Error ? error.message : 'Unknown error'}`);
-  }
-};
+    setPreview(secureUrl);
+    setValue("image", secureUrl);
+  };
+
+  const onSubmit = async (data: BlogFormData) => {
+    console.log("✅ Blog Data:", data);
+
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/blogs`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}` // Fixed header name
+        },
+        body: JSON.stringify(data) // Removed semicolon, added missing parenthesis
+      });
+
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.message || 'Failed to create blog');
+      }
+
+      const result = await res.json();
+      console.log("✅ Blog created successfully:", result);
+
+      toast.success("Blog created successfully!");
+      reset();
+      setPreview("");
+
+    } catch (error) {
+      console.error("❌ Error creating blog:", error);
+      toast.error(`Error:${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+  };
   return (
     <div className="container mx-auto px-4 py-10 max-w-2xl">
       <div className="bg-white dark:bg-neutral-900 shadow-md rounded-2xl p-6 border border-gray-200 dark:border-neutral-800">
