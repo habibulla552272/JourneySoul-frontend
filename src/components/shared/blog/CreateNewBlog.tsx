@@ -10,6 +10,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Image from "next/image";
+import { be } from "zod/v4/locales";
 
 // ✅ Validation Schema
 const blogSchema = z.object({
@@ -17,7 +18,7 @@ const blogSchema = z.object({
   category: z.string().min(3, "Category must be at least 3 characters"),
   title: z.string().min(5, "Title must be at least 5 characters"),
   date: z.string().min(1, "Date is required"),
-  description: z.string().min(20, "Description must be at least 20 characters"),
+  content: z.string().min(10, "Description must be at least 10 characters"),
 });
 
 type BlogFormData = z.infer<typeof blogSchema>;
@@ -36,7 +37,7 @@ const CreateNewBlog = () => {
       category: "",
       title: "",
       date: "",
-      description: "",
+      content: "",
     },
   });
 
@@ -50,16 +51,36 @@ const CreateNewBlog = () => {
       setValue("image", file.name);
     }
   };
+const onSubmit = async (data: BlogFormData) => {
+  console.log("✅ Blog Data:", data);
+  
+  try {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}blogs`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('token')}` // Fixed header name
+      },
+      body: JSON.stringify(data) // Removed semicolon, added missing parenthesis
+    });
 
-  const onSubmit = (data: BlogFormData) => {
-    console.log("✅ Blog Data:", data);
-    toast.success("Blog created successfully!");
+    if (!res.ok) {
+      const errorData = await res.json();
+      throw new Error(errorData.message || 'Failed to create blog');
+    }
 
+    const result = await res.json();
+    console.log("✅ Blog created successfully:", result);
     
+    toast.success("Blog created successfully!");
     reset();
     setPreview("");
-  };
-
+    
+  } catch (error) {
+    console.error("❌ Error creating blog:", error);
+    toast.error(`Error:${error instanceof Error ? error.message : 'Unknown error'}`);
+  }
+};
   return (
     <div className="container mx-auto px-4 py-10 max-w-2xl">
       <div className="bg-white dark:bg-neutral-900 shadow-md rounded-2xl p-6 border border-gray-200 dark:border-neutral-800">
@@ -128,11 +149,11 @@ const CreateNewBlog = () => {
             <Label className="font-medium text-gray-700 dark:text-gray-300">Description</Label>
             <Textarea
               placeholder="Write your blog content here..."
-              {...register("description")}
+              {...register("content")}
               className="min-h-[120px]"
             />
-            {errors.description && (
-              <p className="text-red-500 text-sm">{errors.description.message}</p>
+            {errors.content && (
+              <p className="text-red-500 text-sm">{errors.content.message}</p>
             )}
           </div>
 
