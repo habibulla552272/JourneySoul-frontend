@@ -14,10 +14,14 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   Dialog,
   DialogContent,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { createKey } from "next/dist/shared/lib/router/router";
+import { DialogDescription } from "@radix-ui/react-dialog";
+import { useRouter } from "next/navigation";
 
 interface BlogCommentProps {
   likes: string[];
@@ -50,28 +54,30 @@ const BlogComment = ({ likes, comments, id }: BlogCommentProps) => {
   const [hasLiked, setHasLiked] = useState(false);
   const [userId, setUserId] = useState<string | null>(null);
   const [newComment, setNewComment] = useState("");
+  const [showLoginDialog, setShowLoginDialog] = React.useState(false);
 
   const queryClient = useQueryClient();
+  const router = useRouter();
 
   // Fetch comments
   const { data: commentsData, isLoading } = useQuery({
     queryKey: ["comments", id],
     queryFn: () => getComments(id),
-    enabled: commentOpen, 
+    enabled: commentOpen,
   });
 
-   console.log('comment data',commentsData)
+  console.log("comment data", commentsData);
   // Like mutation
   const likeMutation = useMutation({
     mutationKey: ["likeBlog"],
     mutationFn: () => likeUnlike(id),
     onSuccess: (data) => {
-      console.log(data)
+      console.log(data);
       toast.success(hasLiked ? "Post liked" : "Post unliked!");
     },
     onError: (error) => {
       // Revert optimistic update
-      console.log(error)
+      console.log(error);
       setHasLiked((prev) => !prev);
       setLikeCount((prev) => (hasLiked ? prev + 1 : prev - 1));
       toast.error("Error liking the post");
@@ -89,7 +95,7 @@ const BlogComment = ({ likes, comments, id }: BlogCommentProps) => {
       queryClient.invalidateQueries({ queryKey: ["comments", id] });
     },
     onError: (error) => {
-      console.log(error)
+      console.log(error);
       toast.error("Failed to add comment");
     },
   });
@@ -111,9 +117,15 @@ const BlogComment = ({ likes, comments, id }: BlogCommentProps) => {
   };
 
   const handleLike = () => {
+    console.log(window.location.pathname);
+    const redirectAfterLogin = window.location.pathname;
     if (!userId) {
-      toast.error("Please login to like posts");
+      localStorage.setItem("redirectAfterLogin", redirectAfterLogin);
+      setShowLoginDialog(true);
+      // toast.error("Please login to like posts");
       return;
+    }else{
+      router.push(redirectAfterLogin);
     }
 
     // Optimistic update
@@ -131,7 +143,8 @@ const BlogComment = ({ likes, comments, id }: BlogCommentProps) => {
   const handleSubmitComment = (e: React.FormEvent) => {
     e.preventDefault();
     if (!userId) {
-      toast.error("Please login to comment");
+      setShowLoginDialog(true);
+
       return;
     }
     if (!newComment.trim()) {
@@ -161,18 +174,18 @@ const BlogComment = ({ likes, comments, id }: BlogCommentProps) => {
       .slice(0, 2);
   };
 
-//   // Helper function to get comments array from the data
-//   const getCommentsArray = (data: any): Comment[] => {
-//     if (!data) return [];
-    
-    // If data is an array of comments (from getComments API)
-//     if (Array.isArray(data)) {
-//       return data.flatMap((item: CommentData) => item.content || []);
-//     }
-    
-//     // If data has content property
-//     return data.content || [];
-//   };
+  //   // Helper function to get comments array from the data
+  //   const getCommentsArray = (data: any): Comment[] => {
+  //     if (!data) return [];
+
+  // If data is an array of comments (from getComments API)
+  //     if (Array.isArray(data)) {
+  //       return data.flatMap((item: CommentData) => item.content || []);
+  //     }
+
+  //     // If data has content property
+  //     return data.content || [];
+  //   };
 
   return (
     <div>
@@ -278,6 +291,32 @@ const BlogComment = ({ likes, comments, id }: BlogCommentProps) => {
               </Button>
             </div>
           </form>
+        </DialogContent>
+      </Dialog>
+
+      {/* // login dailo  */}
+
+      <Dialog open={showLoginDialog} onOpenChange={setShowLoginDialog}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Login Required</DialogTitle>
+            <DialogDescription>
+              You need to be logged in to like or comment on posts.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowLoginDialog(false)}>
+              Cancel
+            </Button>
+            <Button
+              onClick={() => {
+                setShowLoginDialog(false);
+                router.push("/login");
+              }}
+            >
+              Login Now
+            </Button>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
     </div>

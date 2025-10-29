@@ -13,15 +13,15 @@ const Navbar = () => {
             {/* logo  */}
             <h2 className='text-2xl  font-bold font-serif '>The JourneySoul</h2>
           </div>
-          <div className='w-[60%]'>
+          <div className='w-[70%]'>
             {/* content  */}
-             <ul className='grid grid-cols-7'>
+             <ul className='grid grid-cols-9 items-center'>
                 <li className=''> <Link href={'/'}>Home </Link></li>
                 <li><Link href='/about'>About</Link></li>
                 <li ><Link href='blog'>Blog</Link> </li>
                 <li><Link href='/contact'>contact</Link></li>
                 <li className=' col-span-2'> <SearchCom />  </li>
-                <li><Profile /></li>
+                <li className='col-span-3'><Profile /></li>
              </ul>
           </div>
 

@@ -57,8 +57,11 @@ const Login = () => {
             if (token) {
                 localStorage.setItem("token", token);
                 toast.success("Login successful!");
+                const redirectPath=localStorage.getItem("redirectAfterLogin")||"/";
+                localStorage.removeItem('redirectAfterLogin');
+
                 console.log("✅ Login success:", token);
-                router.push("/");
+                router.push(redirectPath);
             } else {
                 toast.error("No token received from server");
             }
