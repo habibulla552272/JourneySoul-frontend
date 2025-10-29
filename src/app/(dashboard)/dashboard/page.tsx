@@ -1,14 +1,18 @@
 "use client"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { useAllUserData } from "@/hooks/dashboard";
 import { Users, FileText, AlertCircle, TrendingUp } from "lucide-react"
 
 export default function DashboardOverview() {
+  const {data, isLoading, isError}= useAllUserData();
+  console.log('all users data',data)
   const stats = [
     { label: "Total Users", value: "1,234", icon: Users, color: "bg-blue-500" },
     { label: "Total Posts", value: "456", icon: FileText, color: "bg-green-500" },
     { label: "Suspended Users", value: "12", icon: AlertCircle, color: "bg-red-500" },
     { label: "Growth", value: "+23%", icon: TrendingUp, color: "bg-purple-500" },
   ]
+
 
   return (
     <div>
