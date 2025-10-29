@@ -1,4 +1,5 @@
 import axios from "axios";
+import { tr } from "zod/v4/locales";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -105,7 +106,8 @@ export async function likeUnlike(id:string) {
     const userId= localStorage.getItem("userId");
     if(userId){
       try{
-        const res= await api.post(`/blogs/${id}/like`)
+        const res= await api.post(`/blogs/${id}/like`);
+        return res.data;
       }catch(error){
         console.log(error)
       }
@@ -151,4 +153,16 @@ export async function getComments(id:string) {
     }else{
       console.log('no user id found')
     }
+}
+
+
+
+// all user data fetch
+
+export async function allUserData() {
+  try{
+     const res= await api.get("/users")
+  }catch(error){
+
+  } 
 }
