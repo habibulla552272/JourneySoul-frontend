@@ -51,7 +51,7 @@ const CreateNewBlog = () => {
     data.append("file", file);
     data.append("upload_preset", "First_Time_using");
 
-    const res = await fetch("https://api.cloudinary.com/v1_1/dgxpnxsm7/image/upload", {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_CLOUD_URL}`, {
       method: "POST",
       body: data,
     });

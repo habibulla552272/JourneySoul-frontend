@@ -1,5 +1,6 @@
+import { User } from "@/hooks/dashboard";
 import axios from "axios";
-import { tr } from "zod/v4/locales";
+
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -162,7 +163,48 @@ export async function getComments(id:string) {
 export async function allUserData() {
   try{
      const res= await api.get("/users")
+     console.log('check user data 1',res)
+     return res.data;
   }catch(error){
-
+     console.log(error)
   } 
 }
+
+//single user 
+export async function singleuser(id: string) {
+  try {
+    const res = await api.get(`/users/${id}`);
+    return res.data;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
+// delete user 
+
+
+export async function userDelete(id:string) {
+  try{
+const res= await api.delete(`/users/${id}`);
+return res.data;
+  }catch(error){
+    console.log(error)
+  }
+  
+}
+
+
+// new post create
+
+export async function userUpdate(id: string, data: Partial<User>) {
+  try {
+    const res = await api.patch(`/users/${id}`, data);
+    return res.data;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    throw new Error(error.response?.data?.message || "Failed to update user");
+  }
+}
+
+   
