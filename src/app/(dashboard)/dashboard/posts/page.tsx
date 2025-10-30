@@ -3,54 +3,36 @@
 import { useState } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Trash2, Ban, CheckCircle, Eye } from "lucide-react"
-
-interface Post {
-  id: number
-  title: string
-  author: string
-  date: string
-  status: "published" | "suspended"
-  views: number
-}
+import { useAllBlog, useBlogDeleter } from "@/hooks/dashboard"
+import { BlogData } from "@/types/blog"
 
 export default function PostsPage() {
-  const [posts, setPosts] = useState<Post[]>([
-    {
-      id: 1,
-      title: "Getting Started with React",
-      author: "Jane Smith",
-      date: "2024-03-15",
-      status: "published",
-      views: 1250,
-    },
-    {
-      id: 2,
-      title: "Advanced TypeScript Tips",
-      author: "John Doe",
-      date: "2024-03-14",
-      status: "published",
-      views: 890,
-    },
-    { id: 3, title: "Spam Post", author: "Spam User", date: "2024-03-13", status: "suspended", views: 0 },
-    {
-      id: 4,
-      title: "Next.js Best Practices",
-      author: "Alice Brown",
-      date: "2024-03-12",
-      status: "published",
-      views: 2100,
-    },
-    { id: 5, title: "CSS Grid Mastery", author: "Bob Johnson", date: "2024-03-11", status: "published", views: 1560 },
-  ])
+  const { data } = useAllBlog();
+  console.log('blog data', data)
+  const  deleteMutation= useBlogDeleter()
 
-  const handleSuspend = (id: number) => {
-    setPosts(
-      posts.map((p) => (p.id === id ? { ...p, status: p.status === "published" ? "suspended" : "published" } : p)),
-    )
+  // You'll need to implement these functions with actual API calls
+  const handleSuspend = async (id: string) => {
+    // TODO: Implement suspend/publish API call
+    console.log('Suspend/publish post:', id)
   }
 
-  const handleDelete = (id: number) => {
-    setPosts(posts.filter((p) => p.id !== id))
+  const handleDelete = async (id: string) => {
+    deleteMutation.mutate(id)
+  }
+
+  // Format date to be more readable
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
+    })
+  }
+
+  // Get author name safely
+  const getAuthorName = (author: BlogData['author']) => {
+    return author?.name || 'Unknown Author'
   }
 
   return (
@@ -63,7 +45,9 @@ export default function PostsPage() {
       <Card>
         <CardHeader>
           <CardTitle>All Posts</CardTitle>
-          <CardDescription>Total: {posts.length} posts</CardDescription>
+          <CardDescription>
+            Total: {data ? data.length : 0} posts
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="overflow-x-auto">
@@ -79,48 +63,58 @@ export default function PostsPage() {
                 </tr>
               </thead>
               <tbody>
-                {posts.map((post) => (
-                  <tr key={post.id} className="border-b hover:bg-slate-50 transition">
-                    <td className="py-3 px-4 text-sm font-medium">{post.title}</td>
-                    <td className="py-3 px-4 text-sm text-muted-foreground">{post.author}</td>
-                    <td className="py-3 px-4 text-sm">{post.date}</td>
-                    <td className="py-3 px-4 text-sm flex items-center gap-1">
-                      <Eye size={16} className="text-slate-400" />
-                      {post.views}
-                    </td>
-                    <td className="py-3 px-4 text-sm">
-                      <span
-                        className={`px-2 py-1 rounded text-xs font-medium ${
-                          post.status === "published" ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
-                        }`}
-                      >
-                        {post.status}
-                      </span>
-                    </td>
-                    <td className="py-3 px-4 text-sm">
-                      <div className="flex gap-2">
-                        <button
-                          onClick={() => handleSuspend(post.id)}
-                          className="p-2 hover:bg-yellow-100 rounded transition"
-                          title={post.status === "published" ? "Suspend" : "Publish"}
+                {data && data.length > 0 ? (
+                  data.map((post: BlogData) => (
+                    <tr key={post._id} className="border-b hover:bg-slate-50 transition">
+                      <td className="py-3 px-4 text-sm font-medium">{post.title}</td>
+                      <td className="py-3 px-4 text-sm text-muted-foreground">
+                        {getAuthorName(post.author)}
+                      </td>
+                      <td className="py-3 px-4 text-sm">{formatDate(post.createdAt)}</td>
+                      <td className="py-3 px-4 text-sm flex items-center gap-1">
+                        <Eye size={16} className="text-slate-400" />
+                        {/* Add views count if available in your data, using likes as fallback */}
+                        {post.likes?.length || 0}
+                      </td>
+                      <td className="py-3 px-4 text-sm">
+                        <span
+                          className={`px-2 py-1 rounded text-xs font-medium ${
+                            true // Replace with actual status from your data
+                              ? "bg-green-100 text-green-800" 
+                              : "bg-red-100 text-red-800"
+                          }`}
                         >
-                          {post.status === "published" ? (
+                          {/* You'll need to add status field to your BlogData interface */}
+                          Published
+                        </span>
+                      </td>
+                      <td className="py-3 px-4 text-sm">
+                        <div className="flex gap-2">
+                          <button
+                            onClick={() => handleSuspend(post._id)}
+                            className="p-2 hover:bg-yellow-100 rounded transition"
+                            title="Suspend"
+                          >
                             <Ban size={16} className="text-yellow-600" />
-                          ) : (
-                            <CheckCircle size={16} className="text-green-600" />
-                          )}
-                        </button>
-                        <button
-                          onClick={() => handleDelete(post.id)}
-                          className="p-2 hover:bg-red-100 rounded transition"
-                          title="Delete"
-                        >
-                          <Trash2 size={16} className="text-red-600" />
-                        </button>
-                      </div>
+                          </button>
+                          <button
+                            onClick={() => handleDelete(post._id)}
+                            className="p-2 hover:bg-red-100 rounded transition"
+                            title="Delete"
+                          >
+                            <Trash2 size={16} className="text-red-600" />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan={6} className="py-4 px-4 text-center text-sm text-muted-foreground">
+                      No posts found
                     </td>
                   </tr>
-                ))}
+                )}
               </tbody>
             </table>
           </div>

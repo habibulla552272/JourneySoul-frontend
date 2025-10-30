@@ -1,5 +1,6 @@
 
 'use client'
+import Footer from "@/components/shared/footer/Footer";
 import Hero from "@/components/shared/hero/Hero";
 import Navbar from "@/components/shared/navbar/Navbar";
 import { usePathname } from "next/navigation";
@@ -35,6 +36,7 @@ const LayoutVisibilityWrapper: React.FC<LayoutVisibilityWrapperProps> = ({ child
       {!shouldHideLayout && <Navbar />}
       {!shouldHideLayout && <Hero />}
       {children}
+      {!shouldHideLayout && <Footer />}
     </>
   );
 };

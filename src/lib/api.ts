@@ -82,6 +82,19 @@ export async function FetchBlog() {
   }
 }
 
+// blog delete 
+
+export async function blogDelete(id:string) {
+  try{
+    const res= await api.delete(`/blogs/${id}`)
+    return res.data
+  }catch(error){
+    if(error instanceof Error){
+      throw new Error('Failed to delete');
+    }
+  }
+}
+
 // profile fetch
 
 export async function userProfile() {
