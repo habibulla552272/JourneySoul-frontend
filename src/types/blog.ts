@@ -10,6 +10,8 @@ export interface BlogData {
   createdAt: string;
   updatedAt: string;
   __v: number;
+  status?: "published" | "suspended"; // Add this
+  views?: number; // Add this if you track views
 }
 
 export interface Author {

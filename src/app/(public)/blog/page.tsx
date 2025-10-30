@@ -1,5 +1,6 @@
 import Blog from '@/components/langing/Blog'
-import Hero from '@/components/shared/hero/Hero'
+import Footer from '@/components/shared/footer/Footer'
+// import Hero from '@/components/shared/hero/Hero'
 import React from 'react'
 
 const page = () => {
@@ -7,6 +8,7 @@ const page = () => {
     <div>
       {/* <Hero /> */}
       <Blog />
+      <Footer />
     </div>
   )
 }

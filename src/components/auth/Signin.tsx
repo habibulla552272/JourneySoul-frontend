@@ -1,9 +1,11 @@
+// app/login/page.tsx
 "use client";
 
 import React from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import Cookies from "js-cookie";
 import {
     Form,
     FormField,
@@ -19,19 +21,12 @@ import { loginUser } from "@/lib/api";
 import { useRouter } from "next/navigation";
 import { useMutation } from "@tanstack/react-query";
 
-
-// import your API function (you can create a similar one as newUser)
-
-
-// ✅ Step 1: Define validation schema
 const formSchema = z.object({
     email: z.string().email("Please enter a valid email"),
     password: z.string().min(6, "Password must be at least 6 characters"),
 });
 
-// ✅ Step 2: Component
 const Login = () => {
-
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -40,37 +35,66 @@ const Login = () => {
         },
     });
 
-    // ✅ Step 3: Handle form submit
     const router = useRouter();
 
     const loginMutation = useMutation({
-        mutationFn: (data: {
-            email: string;
-            password: string;
-        }
-        ) => loginUser(data),
+        mutationFn: (data: { email: string; password: string }) => 
+            loginUser(data),
         onSuccess: (data) => {
             const token = data?.data?.access?.token;
-
-            console.log('user data',data?.data?._id)
-            localStorage.setItem('userId',data?.data?._id);
-            if (token) {
-                localStorage.setItem("token", token);
+            const userId = data?.data?._id;
+            const userRole = data?.data?.role; // Make sure your API returns role
+            
+            console.log('Login response:', data);
+            
+            if (token && userId) {
+                // ✅ Store token in cookies (accessible by middleware)
+                Cookies.set('token', token, { 
+                    expires: 1, // 1 day
+                    path: '/',
+                    sameSite: 'lax',
+                    secure: process.env.NODE_ENV === 'production'
+                });
+                
+                // ✅ Store user data in cookies for middleware
+                Cookies.set('userId', userId, { 
+                    expires: 1,
+                    path: '/',
+                    sameSite: 'lax'
+                });
+                
+                if (userRole) {
+                    Cookies.set('userRole', userRole, {
+                        expires: 1,
+                        path: '/',
+                        sameSite: 'lax'
+                    });
+                }
+                
+                // ✅ Optional: Also store in localStorage for client-side convenience
+                localStorage.setItem('token', token);
+                localStorage.setItem('userId', userId);
+                if (userRole) {
+                    localStorage.setItem('userRole', userRole);
+                }
+                
                 toast.success("Login successful!");
-                const redirectPath=localStorage.getItem("redirectAfterLogin")||"/";
+                
+                // ✅ Redirect logic
+                const redirectPath = localStorage.getItem("redirectAfterLogin") || "/";
                 localStorage.removeItem('redirectAfterLogin');
-
-                console.log("✅ Login success:", token);
+                console.log("✅ Login success, redirecting to:", redirectPath);
                 router.push(redirectPath);
             } else {
                 toast.error("No token received from server");
             }
         },
-        onError: (error) => {
+        onError: (error: Error) => {
             console.error("❌ Login failed:", error);
             toast.error(error.message || "Invalid email or password!");
         },
     });
+
     const onSubmit = (values: z.infer<typeof formSchema>) => {
         console.log("Login attempt:", values);
         loginMutation.mutate(values);
@@ -85,7 +109,6 @@ const Login = () => {
 
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
-                        {/* Email Field */}
                         <FormField
                             control={form.control}
                             name="email"
@@ -106,7 +129,6 @@ const Login = () => {
                             )}
                         />
 
-                        {/* Password Field */}
                         <FormField
                             control={form.control}
                             name="password"
@@ -127,7 +149,11 @@ const Login = () => {
                             )}
                         />
 
-                        <Button type="submit" className="w-full">
+                        <Button 
+                            type="submit" 
+                            className="w-full"
+                            disabled={loginMutation.isPending}
+                        >
                             {loginMutation.isPending ? "Logging in..." : "Login"}
                         </Button>
                     </form>
