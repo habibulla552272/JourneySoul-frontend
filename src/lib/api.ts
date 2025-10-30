@@ -171,14 +171,13 @@ export async function allUserData() {
 }
 
 //single user 
-export async function singleuser(id:string) {
-
-    try{
-     const res= await api.get(`/users/${id}`)
-     console.log('check user data 1',res)
-     return res.data;
-  }catch(error){
-     console.log(error)
+export async function singleuser(id: string) {
+  try {
+    const res = await api.get(`/users/${id}`);
+    return res.data;
+  } catch (error) {
+    console.log(error);
+    throw error;
   }
 }
 

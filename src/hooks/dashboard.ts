@@ -11,11 +11,12 @@ export const useAllUserData=()=>{
     });
 }
 
-export const useSingleUser=(id:string)=>{
+export const useSingleUser = (id: string) => {
   return useQuery({
-    queryKey:['singleuser'],
-    queryFn:()=>singleuser(id)
-  })
+    queryKey: ['singleuser', id],
+    queryFn: () => singleuser(id),
+    enabled: !!id, // Only run if id exists
+  });
 }
 
 export const useUserDelete=()=>{
