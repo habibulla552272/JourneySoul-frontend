@@ -1,5 +1,5 @@
 'use client';
-import { allUserData, singleuser, userDelete, userProfile } from "@/lib/api"
+import { allUserData, blogDelete, FetchBlog, singleuser, userDelete, userProfile } from "@/lib/api"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 
 import { toast } from "sonner";
@@ -43,6 +43,31 @@ export const useUserProfileData = () => {
     queryFn: userProfile,
   });
 };
+
+// hoock by all blog 
+
+export const useAllBlog=()=>{
+  return useQuery({
+    queryKey:['blog'],
+    queryFn: FetchBlog,
+  })
+
+}
+
+// deleter blog 
+export const useBlogDeleter =()=>{
+  const queryclient = useQueryClient()
+  return useMutation({
+    mutationKey:['blog'],
+    mutationFn:(id:string) =>blogDelete(id),
+    onSuccess:(data)=>{
+     queryclient.invalidateQueries({
+      queryKey:['blog']
+     })
+      toast.success(data.message || 'Delete successfuly');
+    }
+  })
+}
 
 
 export interface IUser {
