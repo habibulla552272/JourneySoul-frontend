@@ -20,6 +20,7 @@ import { toast } from "sonner";
 import { loginUser } from "@/lib/api";
 import { useRouter } from "next/navigation";
 import { useMutation } from "@tanstack/react-query";
+import Link from "next/link";
 
 const formSchema = z.object({
     email: z.string().email("Please enter a valid email"),
@@ -38,31 +39,31 @@ const Login = () => {
     const router = useRouter();
 
     const loginMutation = useMutation({
-        mutationFn: (data: { email: string; password: string }) => 
+        mutationFn: (data: { email: string; password: string }) =>
             loginUser(data),
         onSuccess: (data) => {
             const token = data?.data?.access?.token;
             const userId = data?.data?._id;
             const userRole = data?.data?.role; // Make sure your API returns role
-            
+
             console.log('Login response:', data);
-            
+
             if (token && userId) {
                 // ✅ Store token in cookies (accessible by middleware)
-                Cookies.set('token', token, { 
+                Cookies.set('token', token, {
                     expires: 1, // 1 day
                     path: '/',
                     sameSite: 'lax',
                     secure: process.env.NODE_ENV === 'production'
                 });
-                
+
                 // ✅ Store user data in cookies for middleware
-                Cookies.set('userId', userId, { 
+                Cookies.set('userId', userId, {
                     expires: 1,
                     path: '/',
                     sameSite: 'lax'
                 });
-                
+
                 if (userRole) {
                     Cookies.set('userRole', userRole, {
                         expires: 1,
@@ -70,16 +71,16 @@ const Login = () => {
                         sameSite: 'lax'
                     });
                 }
-                
+
                 // ✅ Optional: Also store in localStorage for client-side convenience
                 localStorage.setItem('token', token);
                 localStorage.setItem('userId', userId);
                 if (userRole) {
                     localStorage.setItem('userRole', userRole);
                 }
-                
+
                 toast.success("Login successful!");
-                
+
                 // ✅ Redirect logic
                 const redirectPath = localStorage.getItem("redirectAfterLogin") || "/";
                 localStorage.removeItem('redirectAfterLogin');
@@ -148,10 +149,16 @@ const Login = () => {
                                 </FormItem>
                             )}
                         />
-
-                        <Button 
-                            type="submit" 
-                            className="w-full"
+                        <p className="text-xs md:sm">
+                            If you don&apos;t have an account, please{" "}
+                            <Link href="/signup" className="text-blue-600 hover:underline font-medium">
+                                Sign up
+                            </Link>
+                            .
+                        </p>
+                        <Button
+                            type="submit"
+                            className="w-full cursor-pointer"
                             disabled={loginMutation.isPending}
                         >
                             {loginMutation.isPending ? "Logging in..." : "Login"}
