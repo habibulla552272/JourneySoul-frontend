@@ -70,7 +70,24 @@ export async function loginUser(data: { email: string; password: string }) {
 }
 
 // blog
-
+export async function SingleBlogForStatic(id: string) {
+  try {
+    const res = await api.get(`/blogs/${id}`);
+    return res?.data?.data;
+  } catch (error) {
+    console.log('Error fetching single blog:', error);
+    throw error;
+  }
+}
+export async function AllBlogsForStatic() {
+  try {
+    const res = await api.get(`/blogs`);
+    return res?.data?.data;
+  } catch (error) {
+    console.log('Error fetching all blogs:', error);
+    return [];
+  }
+}
 // fetch blog
 
 export async function FetchBlog() {
@@ -81,7 +98,14 @@ export async function FetchBlog() {
     console.log(error);
   }
 }
-
+export async function SingleBlog(id:string) {
+  try {
+    const res = await api.get(`/blogs/${id}`);
+    return res?.data?.data;
+  } catch (error) {
+    console.log(error);
+  }
+}
 // blog delete 
 
 export async function blogDelete(id:string) {
@@ -220,4 +244,4 @@ export async function userUpdate(id: string, data: Partial<User>) {
   }
 }
 
-   
+export default api

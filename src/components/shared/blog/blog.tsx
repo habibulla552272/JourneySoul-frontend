@@ -85,18 +85,13 @@ const BlogCard: React.FC<BlogCardProps> = ({
         </div>
 
         {/* Fixed bottom section */}
-        <div className="pt-4 flex justify-between items-center">
+        <div className="pt-4 ">
           <BlogComment 
             id={id} 
             likes={likes} 
             comments={commentCount} 
           />
-          <Link
-            className="hover:border-b-1 font-normal text-xs pt-2 hover:border-green-300"
-            href={`/blog/${tittle.toLowerCase().replace(/\s+/g, "-")}`}
-          >
-            Read More
-          </Link>
+         
         </div>
       </div>
     </div>

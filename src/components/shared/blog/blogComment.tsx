@@ -22,6 +22,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { createKey } from "next/dist/shared/lib/router/router";
 import { DialogDescription } from "@radix-ui/react-dialog";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 interface BlogCommentProps {
   likes: string[];
@@ -124,7 +125,7 @@ const BlogComment = ({ likes, comments, id }: BlogCommentProps) => {
       setShowLoginDialog(true);
       // toast.error("Please login to like posts");
       return;
-    }else{
+    } else {
       router.push(redirectAfterLogin);
     }
 
@@ -154,6 +155,19 @@ const BlogComment = ({ likes, comments, id }: BlogCommentProps) => {
 
     createCommentMutation.mutate();
   };
+
+  const readmoreHandel = () => {
+    //  const redirectAfterLogin = window.location.pathname;
+    // if (!userId) {
+    //   localStorage.setItem("redirectAfterLogin", redirectAfterLogin);
+    //   setShowLoginDialog(true);
+    //   // toast.error("Please login to like posts");
+    //   return;
+    // } else {
+    //   router.push(redirectAfterLogin);
+    // }
+    router.push(`/blog/${id}`)
+  }
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("en-US", {
@@ -189,39 +203,48 @@ const BlogComment = ({ likes, comments, id }: BlogCommentProps) => {
 
   return (
     <div>
-      <div className="grid grid-cols-3 gap-5 pt-4 text-gray-700">
-        <p
-          className={`flex items-center gap-1 ${
-            hasLiked ? "text-green-500" : "text-gray-700"
-          }`}
-        >
-          <ThumbsUp
-            className={`w-8 h-8 cursor-pointer hover:bg-green-400 hover:text-white hover:rounded-full p-2 transition-all duration-300 ${
-              hasLiked ? "text-green-500 bg-green-100 rounded-full" : ""
-            } ${likeMutation.isPending ? "opacity-50" : ""}`}
-            strokeWidth={1.5}
-            onClick={handleLike}
-          />
-          <span>{likeCount}</span>
-        </p>
+      <div className="flex justify-between items-center">
+        <div className="grid grid-cols-3 gap-5 pt-4 text-gray-700">
 
-        <p
-          className="flex items-center gap-1 cursor-pointer"
-          onClick={handleCommentClick}
-        >
-          <MessageSquareText
-            className="w-8 h-8 hover:bg-green-400 hover:text-white hover:rounded-full p-2 transition-all duration-300"
-            strokeWidth={1.5}
-          />
-          <span>{comments}</span>
-        </p>
+          <p
+            className={`flex items-center gap-1 ${hasLiked ? "text-green-500" : "text-gray-700"
+              }`}
+          >
+            <ThumbsUp
+              className={`w-8 h-8 cursor-pointer hover:bg-green-400 hover:text-white hover:rounded-full p-2 transition-all duration-300 ${hasLiked ? "text-green-500 bg-green-100 rounded-full" : ""
+                } ${likeMutation.isPending ? "opacity-50" : ""}`}
+              strokeWidth={1.5}
+              onClick={handleLike}
+            />
+            <span>{likeCount}</span>
+          </p>
 
-        <p>
-          <Share2
-            className="w-8 h-8 cursor-pointer hover:bg-green-400 hover:text-white hover:rounded-full p-2 transition-all duration-300"
-            strokeWidth={1.5}
-          />
-        </p>
+          <p
+            className="flex items-center gap-1 cursor-pointer"
+            onClick={handleCommentClick}
+          >
+            <MessageSquareText
+              className="w-8 h-8 hover:bg-green-400 hover:text-white hover:rounded-full p-2 transition-all duration-300"
+              strokeWidth={1.5}
+            />
+            <span>{comments}</span>
+          </p>
+
+          <p>
+            <Share2
+              className="w-8 h-8 cursor-pointer hover:bg-green-400 hover:text-white hover:rounded-full p-2 transition-all duration-300"
+              strokeWidth={1.5}
+            />
+          </p>
+        </div>
+        <Button
+          onClick={readmoreHandel}
+          className="hover:border-b-1 font-normal text-xs pt-2 hover:border-green-300"
+
+        >
+          Read More
+        </Button>
+
       </div>
 
       <Dialog open={commentOpen} onOpenChange={setCommentOpen}>
