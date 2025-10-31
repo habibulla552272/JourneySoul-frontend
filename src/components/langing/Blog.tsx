@@ -26,7 +26,7 @@ const Blog = () => {
   const [filterData, setFilterData] = useState('all');
   const [blogData, setBlogData] = useState<BlogData[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(7);
+  const [itemsPerPage] = useState(6);
 
   const {
     data: blogdatas,
