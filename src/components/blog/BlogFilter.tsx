@@ -1,24 +1,41 @@
 "use client";
 import React, { useState } from "react";
 
-const BlogFilter = () => {
-  const [current, setCurrent] = useState("all");
+type FilterType = 
+  | "all" 
+  | "Adventure" 
+  | "Travel" 
+  | "Fashion" 
+  | "Technology" 
+  | "Branding";
 
-  const filterData = [
+interface BlogFilterProps {
+  setFilterData: (filter: FilterType) => void;
+}
+
+const BlogFilter = ({ setFilterData }: BlogFilterProps) => {
+  const [current, setCurrent] = useState<FilterType>("all");
+
+  const filterData: FilterType[] = [
     "all",
     "Adventure",
     "Travel",
-    "Fashion",
+    // "Travel",
     "Technology",
     "Branding",
   ];
+
+  const handleFilter = (item: FilterType) => {
+    setCurrent(item);
+    setFilterData(item);
+  };
 
   return (
     <ul className="flex flex-wrap items-center gap-3 justify-center py-4">
       {filterData.map((item, index) => (
         <li
           key={index}
-          onClick={() => setCurrent(item)}
+          onClick={() => handleFilter(item)}
           className={`cursor-pointer text-sm font-medium px-4 py-2 rounded-full transition-all duration-300 
           ${
             current === item
