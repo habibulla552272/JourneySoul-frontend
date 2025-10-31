@@ -292,30 +292,30 @@ export default function AboutPage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="text-center">
               <Avatar className="w-24 h-24 mx-auto mb-4">
-                <AvatarImage src="/team-member1.jpg" />
-                <AvatarFallback>JD</AvatarFallback>
+                <AvatarImage src="/rashed.jpeg" />
+                <AvatarFallback>RM</AvatarFallback>
               </Avatar>
-              <h3 className="text-xl font-semibold mb-2">John Doe</h3>
+              <h3 className="text-xl font-semibold mb-2">Rashed Mahmud</h3>
               <p className="text-blue-600 mb-2">Founder & CEO</p>
               <p className="text-gray-600">Leading the vision and growth of our blogging platform.</p>
             </div>
 
             <div className="text-center">
               <Avatar className="w-24 h-24 mx-auto mb-4">
-                <AvatarImage src="/team-member2.jpg" />
-                <AvatarFallback>JS</AvatarFallback>
+                <AvatarImage src="/barai.jpeg" />
+                <AvatarFallback>SB</AvatarFallback>
               </Avatar>
-              <h3 className="text-xl font-semibold mb-2">Jane Smith</h3>
+              <h3 className="text-xl font-semibold mb-2">Sumon Barai</h3>
               <p className="text-green-600 mb-2">Head of Community</p>
               <p className="text-gray-600">Building and nurturing our amazing writer community.</p>
             </div>
 
             <div className="text-center">
               <Avatar className="w-24 h-24 mx-auto mb-4">
-                <AvatarImage src="/team-member3.jpg" />
-                <AvatarFallback>MB</AvatarFallback>
+                <AvatarImage src="/habibulla.jpeg" />
+                <AvatarFallback>HI</AvatarFallback>
               </Avatar>
-              <h3 className="text-xl font-semibold mb-2">Mike Brown</h3>
+              <h3 className="text-xl font-semibold mb-2">Habibulla</h3>
               <p className="text-purple-600 mb-2">Tech Lead</p>
               <p className="text-gray-600">Ensuring our platform runs smoothly and securely.</p>
             </div>
