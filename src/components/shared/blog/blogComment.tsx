@@ -157,15 +157,15 @@ const BlogComment = ({ likes, comments, id }: BlogCommentProps) => {
   };
 
   const readmoreHandel = () => {
-     const redirectAfterLogin = window.location.pathname;
-    if (!userId) {
-      localStorage.setItem("redirectAfterLogin", redirectAfterLogin);
-      setShowLoginDialog(true);
-      // toast.error("Please login to like posts");
-      return;
-    } else {
-      router.push(redirectAfterLogin);
-    }
+    //  const redirectAfterLogin = window.location.pathname;
+    // if (!userId) {
+    //   localStorage.setItem("redirectAfterLogin", redirectAfterLogin);
+    //   setShowLoginDialog(true);
+    //   // toast.error("Please login to like posts");
+    //   return;
+    // } else {
+    //   router.push(redirectAfterLogin);
+    // }
     router.push(`/blog/${id}`)
   }
 

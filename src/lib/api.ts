@@ -244,4 +244,4 @@ export async function userUpdate(id: string, data: Partial<User>) {
   }
 }
 
-   
+export default api
