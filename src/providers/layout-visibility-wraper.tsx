@@ -21,6 +21,7 @@ const HIDDEN_ROUTES = [
   "/account/change-password",
   "/account/booking-history",
   "/account/tour-history",
+  '/userprofile'
 ];
 
 interface LayoutVisibilityWrapperProps {

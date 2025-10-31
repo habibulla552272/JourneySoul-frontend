@@ -2,6 +2,15 @@ import Link from "next/link";
 import React, { useState, useEffect } from "react";
 import SearchCom from "./search";
 import Profile from "./Profile";
+import {
+  Menubar,
+  MenubarContent,
+  MenubarItem,
+  MenubarMenu,
+  MenubarSeparator,
+  MenubarShortcut,
+  MenubarTrigger,
+} from "@/components/ui/menubar"
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -57,7 +66,9 @@ const Navbar = () => {
               <li className="col-span-4">
                 <SearchCom />
               </li>
+            
               <li className="col-span-3">
+                
                 <Profile />
               </li>
             </ul>
