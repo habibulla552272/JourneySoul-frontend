@@ -20,6 +20,7 @@ import { newUser } from "@/lib/api";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { useMutation } from "@tanstack/react-query";
+import Link from "next/link";
 
 
 // ✅ Step 1: Define form schema with Zod validation
@@ -115,8 +116,15 @@ const Signup = () => {
                                 </FormItem>
                             )}
                         />
+                        <p className="text-xs md:text-sm">
+                            If you have an account, please{" "}
+                            <Link href="/login" className="text-blue-600 hover:underline font-medium">
+                                Sign in
+                            </Link>
+                            .
+                        </p>
 
-                        <Button type="submit" className="w-full">
+                        <Button type="submit" className="w-full cursor-pointer">
                             {registerMutation.isPending ? "Registering..." : "Sign Up"}
                         </Button>
                     </form>
