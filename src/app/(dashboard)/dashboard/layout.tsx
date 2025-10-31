@@ -4,6 +4,8 @@ import type React from "react"
 import { useState } from "react"
 import Link from "next/link"
 import { Menu, X, LogOut, Settings } from "lucide-react"
+import Cookies from 'js-cookie';
+
 
 export default function DashboardLayout({
   children,
@@ -18,6 +20,22 @@ export default function DashboardLayout({
     { href: "/dashboard/posts", label: "Posts", icon: "📝" },
     { href: "/dashboard/profile", label: "Profile", icon: "⚙️" },
   ]
+  
+  const logoutHandle=()=>{
+      const handelLogout = () => {
+    // Clear localStorage
+    localStorage.clear();
+
+    // Clear cookies
+    Cookies.remove("token", { path: "/" });
+    Cookies.remove("userId", { path: "/" });
+    Cookies.remove("userRole", { path: "/" });
+
+    // Optional: Redirect to login page
+    window.location.href = "/login";
+  };
+
+  }
 
   return (
     <div className="flex h-screen bg-background">
@@ -50,7 +68,7 @@ export default function DashboardLayout({
             <Settings size={20} />
             {sidebarOpen && <span>Settings</span>}
           </button>
-          <button className="w-full flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-red-900/20 text-red-400 transition text-sm">
+          <button onClick={logoutHandle} className="w-full flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-red-900/20 text-red-400 transition text-sm">
             <LogOut size={20} />
             {sidebarOpen && <span>Logout</span>}
           </button>

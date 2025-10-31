@@ -6,6 +6,22 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import {
+  Menubar,
+  MenubarCheckboxItem,
+  MenubarContent,
+  MenubarItem,
+  MenubarMenu,
+  MenubarRadioGroup,
+  MenubarRadioItem,
+  MenubarSeparator,
+  MenubarShortcut,
+  MenubarSub,
+  MenubarSubContent,
+  MenubarSubTrigger,
+  MenubarTrigger,
+} from "@/components/ui/menubar";
+import Cookies from 'js-cookie';
 
 const Profile = () => {
   const router = useRouter();
@@ -45,24 +61,47 @@ const Profile = () => {
     );
   }
 
+  const handelLogout = () => {
+    // Clear localStorage
+    localStorage.clear();
+
+    // Clear cookies
+    Cookies.remove("token", { path: "/" });
+    Cookies.remove("userId", { path: "/" });
+    Cookies.remove("userRole", { path: "/" });
+
+    // Optional: Redirect to login page
+    window.location.href = "/login";
+  };
+
   return (
     <div className="flex items-center gap-3 p-2 rounded-xl w-fit mx-auto">
-      <Link href="/userprofile">
-        {user.profileImageUrl ? (
-          <div className="w-14 h-14 relative">
-            <Image
-              src={user.profileImageUrl}
-              alt={user.name}
-              fill
-              className="rounded-full object-cover border border-gray-200"
-            />
-          </div>
-        ) : (
-          <div className="w-14 h-14 flex items-center justify-center rounded-full bg-black text-white font-semibold text-lg">
-            {getInitials(user.name)}
-          </div>
-        )}
-      </Link>
+      <Menubar className="w-14 h-14 rounded-full">
+        <MenubarMenu>
+          <MenubarTrigger>
+            {user.profileImageUrl ? (
+              <div className="w-14 h-14 relative">
+                <Image
+                  src={user.profileImageUrl}
+                  alt={user.name}
+                  fill
+                  className="rounded-full object-cover border border-gray-200"
+                />
+              </div>
+            ) : (
+              <div className="w-14 h-14 flex items-center justify-center rounded-full bg-black text-white font-semibold text-lg">
+                {getInitials(user.name)}
+              </div>
+            )}
+          </MenubarTrigger>
+          <MenubarContent>
+            <MenubarItem>
+              <Link href="/userprofile">Profile</Link>
+            </MenubarItem>
+            <MenubarItem onClick={handelLogout}>Logout</MenubarItem>
+          </MenubarContent>
+        </MenubarMenu>
+      </Menubar>
 
       <div className="flex flex-col items-start justify-center">
         <h2 className="text-sm font-semibold leading-tight">{user.name}</h2>
@@ -77,7 +116,7 @@ const Profile = () => {
           </Button>
         ) : (
           <p className="text-xs text-gray-500 mt-1">
-            Welcome, {user.name.split(' ')[0]}!
+            Welcome, {user.name.split(" ")[0]}!
           </p>
         )}
       </div>
