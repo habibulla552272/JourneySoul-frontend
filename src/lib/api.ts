@@ -122,16 +122,22 @@ export async function blogDelete(id:string) {
 // profile fetch
 
 export async function userProfile() {
+  // Check if we're in a browser environment
+  if (typeof window === 'undefined') {
+    return null;
+  }
+
   const userId = localStorage.getItem("userId");
-  if (userId) {
-    try {
-      const res = await api.get(`/users/${userId}/profile`);
-      return res?.data;
-    } catch (error) {
-      console.log(error);
-    }
-  }else{
-    console.log("No userId found in localStorage"); 
+  if (!userId) {
+    return null; // Return null instead of undefined
+  }
+
+  try {
+    const res = await api.get(`/users/${userId}/profile`);
+    return res?.data || null; // Ensure we return null if data is undefined
+  } catch (error) {
+    console.log("Profile fetch error:", error);
+    return null; // Return null on error instead of undefined
   }
 }
 
