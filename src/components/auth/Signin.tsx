@@ -51,7 +51,7 @@ const Login = () => {
             if (token && userId) {
                 // ✅ Store token in cookies (accessible by middleware)
                 Cookies.set('token', token, {
-                    expires: 1, // 1 day
+                    expires: 10, // 1 day
                     path: '/',
                     sameSite: 'lax',
                     secure: process.env.NODE_ENV === 'production'
@@ -59,14 +59,14 @@ const Login = () => {
 
                 // ✅ Store user data in cookies for middleware
                 Cookies.set('userId', userId, {
-                    expires: 1,
+                    expires: 10,
                     path: '/',
                     sameSite: 'lax'
                 });
 
                 if (userRole) {
                     Cookies.set('userRole', userRole, {
-                        expires: 1,
+                        expires: 10,
                         path: '/',
                         sameSite: 'lax'
                     });

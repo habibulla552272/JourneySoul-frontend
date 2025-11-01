@@ -8,17 +8,14 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import {
   Menubar,
-  MenubarCheckboxItem,
+
   MenubarContent,
   MenubarItem,
   MenubarMenu,
-  MenubarRadioGroup,
-  MenubarRadioItem,
-  MenubarSeparator,
-  MenubarShortcut,
-  MenubarSub,
-  MenubarSubContent,
-  MenubarSubTrigger,
+
+
+
+
   MenubarTrigger,
 } from "@/components/ui/menubar";
 import Cookies from 'js-cookie';
@@ -27,6 +24,7 @@ const Profile = () => {
   const router = useRouter();
   const { data, isLoading, isError } = useUserProfileData();
   const user = data?.data?.user;
+  
 
   const getInitials = (name: string) => {
     if (!name) return "";
