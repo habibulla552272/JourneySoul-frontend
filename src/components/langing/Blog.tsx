@@ -7,6 +7,9 @@ import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
 import { FetchBlog } from "@/lib/api";
 import { BlogData } from "@/types/blog";
+import { Button } from "../ui/button";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "../ui/dialog";
+import { useRouter } from "next/navigation";
 
 // URL validation function
 const isValidUrl = (string: string) => {
@@ -27,6 +30,16 @@ const Blog = () => {
   const [blogData, setBlogData] = useState<BlogData[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(6);
+  const [showLoginDialog, setShowLoginDialog] = useState(false);
+  const [userId, setUserId] = useState<string | null>(null);
+  
+  const router = useRouter();
+
+  // Initialize userId from localStorage - moved to useEffect
+  useEffect(() => {
+    const userIdFromStorage = localStorage.getItem("token");
+    setUserId(userIdFromStorage);
+  }, []); // Empty dependency array means this runs once on mount
 
   const {
     data: blogdatas,
@@ -113,6 +126,18 @@ const Blog = () => {
     return pageNumbers;
   };
 
+  const handleCreateNewBlog = () => {
+    console.log(window.location.pathname);
+    const redirectAfterLogin = window.location.pathname;
+    if (!userId) {
+      localStorage.setItem("redirectAfterLogin", redirectAfterLogin);
+      setShowLoginDialog(true);
+      return;
+    } else {
+      router.push("/blog/blogcreate");
+    }
+  };
+
   if (isLoading) {
     return (
       <section className="my-16">
@@ -142,13 +167,13 @@ const Blog = () => {
       <div className="container mx-auto">
         <div className="flex justify-between items-center mb-8">
           <BlogFilter setFilterData={setFilterData} />
-          <Link
-            href={"/blog/blogcreate"}
+          <Button
+            onClick={handleCreateNewBlog}
             className="flex items-center gap-2 bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition-colors"
           >
             <PlusCircleIcon className="w-5 h-5" />
             Create Blog
-          </Link>
+          </Button>
         </div>
 
         {/* Blog Grid */}
@@ -192,13 +217,13 @@ const Blog = () => {
             <div className="col-span-full text-center py-12">
               <div className="bg-gray-50 rounded-lg p-8">
                 <p className="text-gray-500 text-lg mb-4">No blogs found.</p>
-                <Link
-                  href="/blog/blogcreate"
+                <Button
+                  onClick={handleCreateNewBlog}
                   className="inline-flex items-center gap-2 bg-green-500 text-white px-6 py-2 rounded-lg hover:bg-green-600 transition-colors"
                 >
                   <PlusCircleIcon className="w-5 h-5" />
                   Create First Blog
-                </Link>
+                </Button>
               </div>
             </div>
           )}
@@ -257,6 +282,29 @@ const Blog = () => {
           </div>
         )}
       </div>
+      <Dialog open={showLoginDialog} onOpenChange={setShowLoginDialog}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Login Required</DialogTitle>
+            <DialogDescription>
+              You need to be logged in to create a new blog post.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowLoginDialog(false)}>
+              Cancel
+            </Button>
+            <Button
+              onClick={() => {
+                setShowLoginDialog(false);
+                router.push("/login");
+              }}
+            >
+              Login Now
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </section>
   );
 };
