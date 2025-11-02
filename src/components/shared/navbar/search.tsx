@@ -1,8 +1,11 @@
 "use client";
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { FetchBlog } from "@/lib/api";
 import { useQuery } from "@tanstack/react-query";
 import { Search } from "lucide-react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 
 // Define the type for blog items
@@ -16,7 +19,8 @@ interface BlogItem {
 const SearchCom = () => {
   const [showdata, setShowdata] = useState<BlogItem[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
-
+  const router = useRouter();
+  const [showLoginDialog, setShowLoginDialog] = useState(false)
   const {
     data: blogdata,
     isLoading,
@@ -29,12 +33,12 @@ const SearchCom = () => {
   // Helper function to validate and format image paths
   const getValidImageSrc = (path: string | undefined): string => {
     if (!path) return "";
-    
+
     // If it's already an absolute URL, return as is
     if (path.startsWith('http://') || path.startsWith('https://')) {
       return path;
     }
-    
+
     // If it's a relative path, ensure it starts with leading slash
     return path.startsWith('/') ? path : `/${path}`;
   };
@@ -72,6 +76,22 @@ const SearchCom = () => {
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error loading data</div>;
 
+  const handelsingleblog = (id: string) => {
+
+    const redirectAfterLogin = window.location.pathname;
+    const token = localStorage.getItem('token');
+
+    if (!token) {
+      localStorage.setItem('redirectAfterLogin',redirectAfterLogin)
+      setShowLoginDialog(true)
+      return;
+    }else{
+      router.push(redirectAfterLogin)
+    }
+
+    router.push(`/blog/${id}`)
+  }
+
   return (
     <div className="relative">
       <form onSubmit={handleSubmit} className="flex gap-1 border-1 rounded-xl">
@@ -93,7 +113,7 @@ const SearchCom = () => {
       {showdata.length > 0 && (
         <div className="absolute top-full left-0 right-0 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg mt-2 shadow-lg z-10 max-h-60 overflow-y-auto">
           {showdata.map((item) => (
-            <div
+            <div onClick={() => handelsingleblog(item._id)}
               key={item._id}
               className="p-3 border-b border-gray-200 dark:border-gray-700 last:border-b-0 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer h-16 overflow-hidden"
             >
@@ -140,6 +160,30 @@ const SearchCom = () => {
           No results found for &apos;{searchTerm}&apos;
         </div>
       )}
+
+      <Dialog open={showLoginDialog} onOpenChange={setShowLoginDialog}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Login Required</DialogTitle>
+            <DialogDescription>
+              You need to be logged in to like or comment on posts.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowLoginDialog(false)}>
+              Cancel
+            </Button>
+            <Button
+              onClick={() => {
+                setShowLoginDialog(false);
+                router.push("/login");
+              }}
+            >
+              Login Now
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

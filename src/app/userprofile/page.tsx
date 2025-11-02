@@ -83,7 +83,7 @@ const UserProfilePage = () => {
     onSuccess: () => {
       toast.success("Profile updated why  successfully");
       queryClient.invalidateQueries({ queryKey: ['singleuser', userId] });
-      setIsEditing(false);
+      // setIsEditing(false);
     },
     onError: (error: Error) => toast.error(error.message),
   });
@@ -186,7 +186,7 @@ const UserProfilePage = () => {
       </section>
     );
   }
-
+ console.log('user data',user)
   return (
     <section>
       <div className='container mx-auto py-8'>
@@ -275,7 +275,7 @@ const UserProfilePage = () => {
                   </div>
                 </div>
 
-                <div className="space-y-2">
+                {/* <div className="space-y-2">
                   <Label className="text-muted-foreground">Member Since</Label>
                   <div className="p-2 border rounded-md bg-gray-50">
                     {new Date(user.createdAt).toLocaleDateString("en-US", {
@@ -284,7 +284,7 @@ const UserProfilePage = () => {
                       day: "numeric",
                     })}
                   </div>
-                </div>
+                </div> */}
 
                 <div className="space-y-2">
                   <Label className="text-muted-foreground">User ID</Label>
