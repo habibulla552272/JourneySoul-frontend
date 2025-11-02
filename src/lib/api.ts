@@ -98,7 +98,7 @@ export async function FetchBlog() {
     console.log(error);
   }
 }
-export async function SingleBlog(id:string) {
+export async function SingleBlog(id: string) {
   try {
     const res = await api.get(`/blogs/${id}`);
     return res?.data?.data;
@@ -108,17 +108,25 @@ export async function SingleBlog(id:string) {
 }
 // blog delete 
 
-export async function blogDelete(id:string) {
-  try{
-    const res= await api.delete(`/blogs/${id}`)
+export async function blogDelete(id: string) {
+  try {
+    const res = await api.delete(`/blogs/${id}`)
     return res.data
-  }catch(error){
-    if(error instanceof Error){
+  } catch (error) {
+    if (error instanceof Error) {
       throw new Error('Failed to delete');
     }
   }
 }
+export async function blogUpdate(id: string, data: any) {
+  try {
 
+    const res =await api.patch(`blogs/${id}`, data)
+    return res.data
+  } catch (error) {
+    console.log(error)
+  }
+}
 // profile fetch
 
 export async function userProfile() {
@@ -146,34 +154,34 @@ export async function userProfile() {
 
 // /blogs/:blogId/like
 
-export async function likeUnlike(id:string) {
-    const userId= localStorage.getItem("userId");
-    if(userId){
-      try{
-        const res= await api.post(`/blogs/${id}/like`);
-        return res.data;
-      }catch(error){
-        console.log(error)
-      }
-    }else{
-      console.log('no user id found')
+export async function likeUnlike(id: string) {
+  const userId = localStorage.getItem("userId");
+  if (userId) {
+    try {
+      const res = await api.post(`/blogs/${id}/like`);
+      return res.data;
+    } catch (error) {
+      console.log(error)
     }
+  } else {
+    console.log('no user id found')
+  }
 }
 
 
 export async function createComment(id: string, text: string) {
   const userId = localStorage.getItem("userId");
-  const token = localStorage.getItem("token"); 
-  
+  const token = localStorage.getItem("token");
+
   if (!userId) {
     throw new Error("Please login to comment");
   }
 
   try {
-    const res = await api.post(`/blogs/${id}/comments`, { 
+    const res = await api.post(`/blogs/${id}/comments`, {
       text: text,
       userId: userId,
-      category:'',
+      category: '',
       // new comment add korte hobe 
     });
     return res.data;
@@ -184,19 +192,19 @@ export async function createComment(id: string, text: string) {
 }
 
 
-export async function getComments(id:string) {
-  console.log(' blog id',id)
-   const userId= localStorage.getItem("userId");
-    if(userId){
-      try{
-        const res= await api.get(`/blogs/${id}/comments`);
-        return res.data.comments
-      }catch(error){
-        console.log(error)
-      }
-    }else{
-      console.log('no user id found')
+export async function getComments(id: string) {
+  console.log(' blog id', id)
+  const userId = localStorage.getItem("userId");
+  if (userId) {
+    try {
+      const res = await api.get(`/blogs/${id}/comments`);
+      return res.data.comments
+    } catch (error) {
+      console.log(error)
     }
+  } else {
+    console.log('no user id found')
+  }
 }
 
 
@@ -204,13 +212,13 @@ export async function getComments(id:string) {
 // all user data fetch
 
 export async function allUserData() {
-  try{
-     const res= await api.get("/users")
-     console.log('check user data 1',res)
-     return res.data;
-  }catch(error){
-     console.log(error)
-  } 
+  try {
+    const res = await api.get("/users")
+    console.log('check user data 1', res)
+    return res.data;
+  } catch (error) {
+    console.log(error)
+  }
 }
 
 //single user 
@@ -227,14 +235,14 @@ export async function singleuser(id: string) {
 // delete user 
 
 
-export async function userDelete(id:string) {
-  try{
-const res= await api.delete(`/users/${id}`);
-return res.data;
-  }catch(error){
+export async function userDelete(id: string) {
+  try {
+    const res = await api.delete(`/users/${id}`);
+    return res.data;
+  } catch (error) {
     console.log(error)
   }
-  
+
 }
 
 
@@ -244,7 +252,7 @@ export async function userUpdate(id: string, data: Partial<User>) {
   try {
     const res = await api.patch(`/users/${id}`, data);
     return res.data;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     throw new Error(error.response?.data?.message || "Failed to update user");
   }

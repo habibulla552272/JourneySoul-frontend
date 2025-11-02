@@ -8,14 +8,9 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import {
   Menubar,
-
   MenubarContent,
   MenubarItem,
   MenubarMenu,
-
-
-
-
   MenubarTrigger,
 } from "@/components/ui/menubar";
 import Cookies from 'js-cookie';
@@ -24,7 +19,7 @@ const Profile = () => {
   const router = useRouter();
   const { data, isLoading, isError } = useUserProfileData();
   const user = data?.data?.user;
-  
+
 
   const getInitials = (name: string) => {
     if (!name) return "";
@@ -74,9 +69,9 @@ const Profile = () => {
 
   return (
     <div className="flex items-center gap-3 p-2 rounded-xl w-fit mx-auto">
-      <Menubar className="w-14 h-14 rounded-full">
+      <Menubar className="w-14 h-14 p-0 m-0 rounded-full">
         <MenubarMenu>
-          <MenubarTrigger>
+          <MenubarTrigger className="p-0 m-0 bg-transparent">
             {user.profileImageUrl ? (
               <div className="w-14 h-14 relative">
                 <Image
@@ -113,7 +108,7 @@ const Profile = () => {
             Go to Dashboard
           </Button>
         ) : (
-          <p className="text-xs text-gray-500 mt-1">
+          <p className="text-xs text-white mt-1">
             Welcome, {user.name.split(" ")[0]}!
           </p>
         )}
