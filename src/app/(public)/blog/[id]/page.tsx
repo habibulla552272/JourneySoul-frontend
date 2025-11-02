@@ -14,7 +14,8 @@ const Page = async ({ params }: BlogPageProps) => {
 
   try {
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/blogs/${id}`, {
-      next: { revalidate: 60 },
+    
+      next: { revalidate: 120 }, // optional caching
     });
 
     if (!res.ok) {
