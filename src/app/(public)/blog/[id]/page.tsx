@@ -12,7 +12,7 @@ const Page = async ({ params }: BlogPageProps) => {
 
   try {
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/blogs/${id}`, {
-      next: { revalidate: 60 }, // optional caching
+      next: { revalidate: 120 }, // optional caching
     });
 
     if (!res.ok) {
@@ -107,7 +107,9 @@ const Page = async ({ params }: BlogPageProps) => {
 
 export async function generateStaticParams() {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/blogs`);
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/blogs`,{
+      
+    });
     // console.log('res data ',res)
     const blogs = await res.json();
 
