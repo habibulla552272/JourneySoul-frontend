@@ -10,8 +10,8 @@ export interface BlogData {
   createdAt: string;
   updatedAt: string;
   __v: number;
-  status?: "published" | "suspended"; // Add this
-  views?: number; // Add this if you track views
+  status?: "published" | "suspended";
+  views?: number;
 }
 
 export interface Author {
@@ -22,7 +22,7 @@ export interface Author {
 
 export interface Comment {
   _id: string;
-  user: string;
+  user: Author; // Changed from string to Author
   text: string;
   createdAt: string;
   updatedAt: string;

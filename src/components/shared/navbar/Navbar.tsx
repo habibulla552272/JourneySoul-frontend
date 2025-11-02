@@ -43,9 +43,12 @@ const Navbar = () => {
         <div className="container mx-auto px-4 flex justify-between items-center">
           {/* Logo */}
           <div className="w-auto">
+            <Link href={'/'}>
+            
             <h2 className="text-xl md:text-2xl font-bold font-serif">
               The JourneySoul
             </h2>
+            </Link>
           </div>
 
           {/* Desktop Navigation - Hidden on mobile */}

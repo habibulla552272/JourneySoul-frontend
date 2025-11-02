@@ -32,12 +32,17 @@ interface BlogCommentProps {
 
 export interface Comment {
   _id: string;
-  user: string;
+  user: users;
   text: string;
   createdAt: string;
   updatedAt: string;
 }
+interface users{
+  _id:string;
+  name:string;
+  email:string;
 
+}
 interface CommentData {
   _id: string;
   content: Comment[];
@@ -59,7 +64,7 @@ const BlogComment = ({ likes, comments, id }: BlogCommentProps) => {
 
   const queryClient = useQueryClient();
   const router = useRouter();
-
+  console.log('coment 22',comments)
   // Fetch comments
   const { data: commentsData, isLoading } = useQuery({
     queryKey: ["comments", id],
@@ -271,7 +276,7 @@ const BlogComment = ({ likes, comments, id }: BlogCommentProps) => {
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-1">
                       <span className="font-semibold text-sm">
-                        User {/* You might want to fetch user name here */}
+                       {comment?.user?.name}
                       </span>
                       <span className="text-xs text-gray-500">
                         {formatDate(comment.createdAt)}

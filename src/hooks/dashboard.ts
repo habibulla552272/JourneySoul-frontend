@@ -39,8 +39,11 @@ const queryclient=useQueryClient();
 
 export const useUserProfileData = () => {
   return useQuery({
-    queryKey: ['user-profile'],
+    queryKey: ['userprofile'],
     queryFn: userProfile,
+    // Add these options for better handling
+    retry: 1,
+    staleTime: 5 * 60 * 1000, // 5 minutes
   });
 };
 
