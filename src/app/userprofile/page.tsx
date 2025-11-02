@@ -10,6 +10,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Loader2, Edit2, Save, X } from 'lucide-react';
+import UserBlog from '@/components/blog/UserBlog';
 
 // Utility functions
 const uploadImageToCloudinary = async (file: File): Promise<string> => {
@@ -80,9 +81,9 @@ const UserProfilePage = () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     mutationFn: ({ id, data }: { id: string; data: any }) => userUpdate(id, data),
     onSuccess: () => {
-        setIsEditing(false);
       toast.success("Profile updated why  successfully");
       queryClient.invalidateQueries({ queryKey: ['singleuser', userId] });
+      setIsEditing(false);
     },
     onError: (error: Error) => toast.error(error.message),
   });
@@ -330,6 +331,7 @@ const UserProfilePage = () => {
             </form>
           </CardContent>
         </Card>
+        <UserBlog />
       </div>
     </section>
   );
