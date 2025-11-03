@@ -64,10 +64,10 @@ export default function DashboardLayout({
         </nav>
 
         <div className="p-4 border-t border-slate-700 space-y-2">
-          <button className="w-full flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-800 transition text-sm">
+          {/* <button className="w-full flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-800 transition text-sm">
             <Settings size={20} />
             {sidebarOpen && <span>Settings</span>}
-          </button>
+          </button> */}
           <button onClick={logoutHandle} className="w-full flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-red-900/20 text-red-400 transition text-sm">
             <LogOut size={20} />
             {sidebarOpen && <span>Logout</span>}
