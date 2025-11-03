@@ -186,7 +186,8 @@ const UserProfilePage = () => {
       </section>
     );
   }
- console.log('user data',user)
+ console.log('user data 1111',formData.profileImageUrl)
+ console.log('user profile data',userData)
   return (
     <section>
       <div className='container mx-auto py-8'>
@@ -201,7 +202,7 @@ const UserProfilePage = () => {
             <div className="flex flex-col items-center space-y-4">
               <Avatar className="h-32 w-32 border-4 border-gray-200">
                 <AvatarImage 
-                  src={formData.profileImageUrl} 
+                  src={user.profileImageUrl} 
                   alt={formData.name}
                   className="object-cover"
                 />
