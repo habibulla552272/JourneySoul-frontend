@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 
 type FilterType = 
-  | "all" 
+  | "All" 
   | "Adventure" 
   | "Travel" 
   | "Fashion" 
@@ -14,10 +14,10 @@ interface BlogFilterProps {
 }
 
 const BlogFilter = ({ setFilterData }: BlogFilterProps) => {
-  const [current, setCurrent] = useState<FilterType>("all");
+  const [current, setCurrent] = useState<FilterType>("All");
 
   const filterData: FilterType[] = [
-    "all",
+    "All",
     "Adventure",
     "Travel",
     // "Travel",
