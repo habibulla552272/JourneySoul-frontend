@@ -11,6 +11,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Loader2, Edit2, Save, X } from 'lucide-react';
 import UserBlog from '@/components/blog/UserBlog';
+import Link from 'next/link';
 
 // Utility functions
 const uploadImageToCloudinary = async (file: File): Promise<string> => {
@@ -191,6 +192,9 @@ const UserProfilePage = () => {
   return (
     <section>
       <div className='container mx-auto py-8'>
+        <Link href={'/'}>
+        <Button>Back To Home</Button>
+        </Link>
         <Card className="max-w-2xl mx-auto">
           <CardHeader className="text-center">
             <CardTitle className="text-3xl font-semibold">User Profile</CardTitle>
