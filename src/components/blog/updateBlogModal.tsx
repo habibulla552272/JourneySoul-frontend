@@ -36,10 +36,10 @@ import { Label } from '@/components/ui/label'
 
 // ✅ Validation Schema (same as reference)
 const formSchema = z.object({
-    image: z.string().min(1, "Image is required"),
-    category: z.string().min(3, "Category must be at least 3 characters"),
-    title: z.string().min(5, "Title must be at least 5 characters"),
-    content: z.string().min(10, "Description must be at least 10 characters"),
+    image: z.string(),
+    category: z.string(),
+    title: z.string(),
+    content: z.string(),
     status: z.enum(['published', 'draft']),
 })
 
@@ -55,20 +55,9 @@ const UpdateBlogModal = ({ id, isOpen, onClose }: UpdateBlogModalProps) => {
     const queryClient = useQueryClient()
     const [preview, setPreview] = React.useState<string>("")
 
-    // Initialize form with react-hook-form
-    const form = useForm<FormValues>({
-        resolver: zodResolver(formSchema),
-        defaultValues: {
-            image: "",
-            category: "",
-            title: "",
-            content: "",
-            status: "published",
-        }
-    })
 
     // Fetch single blog data
- 
+
     const { data, isLoading, error } = useQuery({
         queryKey: ['singleBlog'],
         queryFn: async () => {
@@ -85,6 +74,20 @@ const UpdateBlogModal = ({ id, isOpen, onClose }: UpdateBlogModalProps) => {
             return SingleBlog(id)
         },
         enabled: !!id && isOpen,
+    })
+
+    console.log('single data 11', data)
+
+    // Initialize form with react-hook-form
+    const form = useForm<FormValues>({
+        resolver: zodResolver(formSchema),
+        defaultValues: {
+            image: data?.image,
+            category: data?.category,
+            title: data?.title,
+            content: data?.content,
+            status: "published",
+        }
     })
 
     // Update mutation
