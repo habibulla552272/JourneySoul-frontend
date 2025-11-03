@@ -71,7 +71,7 @@ const CreateNewBlog = () => {
       setValue("image", secureUrl);
     } catch (error) {
       console.error("❌ Error uploading image:", error);
-      toast.error("Failed to upload image. Please try again.");
+      toast.error(`${error}`|| `Failed to upload image. Please try again.`);
     } finally {
       setIsUploading(false);
     }
