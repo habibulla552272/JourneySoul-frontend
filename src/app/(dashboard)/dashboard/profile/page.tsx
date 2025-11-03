@@ -1,34 +1,105 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { User, Lock, Save } from "lucide-react"
+import { User, Lock, Save, Loader2 } from "lucide-react"
+
+import { toast } from "sonner"
+import { useUserProfileData } from "@/hooks/dashboard"
+import { userUpdate } from "@/lib/api"
 
 export default function ProfilePage() {
+  const { data, isError, isLoading, refetch } = useUserProfileData()
+  const adminData = data?.data?.user
+
   const [profile, setProfile] = useState({
-    name: "Admin User",
-    email: "admin@journeysoul.com",
-    role: "Administrator",
-    joinDate: "2024-01-01",
+    name: "",
+    email: "",
+    role: "",
+    joinDate: "N/A"
   })
 
   const [isEditing, setIsEditing] = useState(false)
   const [formData, setFormData] = useState(profile)
+  const [isUpdating, setIsUpdating] = useState(false)
   const [passwordData, setPasswordData] = useState({ current: "", new: "", confirm: "" })
 
-  const handleSaveProfile = () => {
-    setProfile(formData)
-    setIsEditing(false)
+  // Initialize profile data when adminData is available
+  useEffect(() => {
+    if (adminData) {
+      const profileData = {
+        name: adminData.name || "",
+        email: adminData.email || "",
+        role: adminData.role || "",
+        joinDate: adminData.createdAt ? new Date(adminData.createdAt).toLocaleDateString() : "N/A"
+      }
+      setProfile(profileData)
+      setFormData(profileData)
+    }
+  }, [adminData])
+
+  const handleSaveProfile = async () => {
+    if (!adminData?._id) {
+      toast.error("User ID not found")
+      return
+    }
+
+    setIsUpdating(true)
+    try {
+      // Only send the fields that can be updated
+      const updateData = {
+        name: formData.name,
+        email: formData.email,
+        // Don't send role or joinDate as they typically shouldn't be updated via profile
+      }
+
+      await userUpdate(adminData._id, updateData)
+
+      // Update local state
+      setProfile(formData)
+      setIsEditing(false)
+
+      // Refetch to get latest data from server
+      await refetch()
+
+      toast.success("Profile updated successfully!")
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      toast.error(error.message || "Failed to update profile")
+    } finally {
+      setIsUpdating(false)
+    }
   }
 
   const handleChangePassword = () => {
     if (passwordData.new === passwordData.confirm) {
-      alert("Password changed successfully!")
+      toast.success("Password changed successfully!")
       setPasswordData({ current: "", new: "", confirm: "" })
     } else {
-      alert("Passwords do not match!")
+      toast.error("Passwords do not match!")
     }
+  }
+
+  const handleCancelEdit = () => {
+    setIsEditing(false)
+    setFormData(profile) // Reset form data to current profile data
+  }
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center min-h-64">
+        <Loader2 className="h-8 w-8 animate-spin" />
+      </div>
+    )
+  }
+
+  if (isError) {
+    return (
+      <div className="text-center text-red-500 min-h-64 flex items-center justify-center">
+        Failed to load profile data
+      </div>
+    )
   }
 
   return (
@@ -74,7 +145,11 @@ export default function ProfilePage() {
                     </div>
                   </div>
 
-                  <Button onClick={() => setIsEditing(true)} className="w-full bg-blue-600 hover:bg-blue-700">
+                  <Button
+                    onClick={() => setIsEditing(true)}
+                    className="w-full bg-blue-600 hover:bg-blue-700"
+                    disabled={isUpdating}
+                  >
                     Edit Profile
                   </Button>
                 </div>
@@ -87,6 +162,7 @@ export default function ProfilePage() {
                       value={formData.name}
                       onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                       className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      disabled={isUpdating}
                     />
                   </div>
                   <div>
@@ -96,19 +172,26 @@ export default function ProfilePage() {
                       value={formData.email}
                       onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                       className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      disabled={isUpdating}
                     />
                   </div>
                   <div className="flex gap-3">
-                    <Button onClick={handleSaveProfile} className="flex-1 bg-green-600 hover:bg-green-700">
-                      <Save size={16} className="mr-2" />
-                      Save Changes
+                    <Button
+                      onClick={handleSaveProfile}
+                      className="flex-1 bg-green-600 hover:bg-green-700"
+                      disabled={isUpdating}
+                    >
+                      {isUpdating ? (
+                        <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                      ) : (
+                        <Save size={16} className="mr-2" />
+                      )}
+                      {isUpdating ? "Updating..." : "Save Changes"}
                     </Button>
                     <Button
-                      onClick={() => {
-                        setIsEditing(false)
-                        setFormData(profile)
-                      }}
+                      onClick={handleCancelEdit}
                       className="flex-1 bg-slate-300 hover:bg-slate-400 text-black"
+                      disabled={isUpdating}
                     >
                       Cancel
                     </Button>
@@ -119,8 +202,8 @@ export default function ProfilePage() {
           </CardContent>
         </Card>
 
-        {/* Security Card */}
-        <Card>
+        {/* Security Card - Uncomment when ready */}
+        {/* <Card>
           <CardHeader>
             <CardTitle>Security</CardTitle>
             <CardDescription>Manage your password</CardDescription>
@@ -163,7 +246,7 @@ export default function ProfilePage() {
               </Button>
             </div>
           </CardContent>
-        </Card>
+        </Card> */}
       </div>
     </div>
   )

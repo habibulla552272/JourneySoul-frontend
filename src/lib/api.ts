@@ -138,15 +138,15 @@ export async function userProfile() {
 
   const userId = localStorage.getItem("userId");
   if (!userId) {
-    return null; // Return null instead of undefined
+    return null; 
   }
 
   try {
     const res = await api.get(`/users/${userId}/profile`);
-    return res?.data || null; // Ensure we return null if data is undefined
+    return res?.data; 
   } catch (error) {
     console.log("Profile fetch error:", error);
-    return null; // Return null on error instead of undefined
+    return null; 
   }
 }
 
